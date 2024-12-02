@@ -1,0 +1,16 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.nav a {
+  width: 10rem;
+  padding: 0px 20px;
+}

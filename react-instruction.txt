@@ -1,0 +1,30 @@
+# Get started
+
+In the terminal:
+
+RUN npm create vite@latest my-react-app --template react
+RUN npm install
+RUN npm run dev
+
+Go to the browser and navigate the url (typically http://localhost:5173)
+
+You should see the project.
+
+# Install MUI (Material-UI)
+
+RUN npm install @mui/material @emotion/react @emotion/styled
+RUN npm install @mui/icons-material
+
+Now, you should be able to start using MUI components like Button, Card, etc. like so:
+
+import { Button } from '@mui/material';
+
+function MyFunc() {
+    return (
+        <div>
+            <Button variant="contained" color="primary">
+                MUI Button
+            </Button>
+        </div>
+    )
+}

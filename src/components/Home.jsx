@@ -4,15 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { Box, Typography } from "@mui/material";
 import { isMoving3D } from "../utils/IsMoving";
-
-const handLandmarkEnum = {
-  THUMB_TIP: 4,
-  INDEX_TIP: 8,
-  MIDDLE_TIP: 12,
-  RING_TIP: 16,
-  PINKY_TIP: 20,
-  WRIST_BASE: 0
-}
+import { HAND_LANDMARKS_LITE, INDEX_TIP, MIDDLE_TIP, PINKY_TIP, RING_TIP, THUMB_TIP, WRIST_BASE } from "../utils/Landmarks";
 
 function Home() {
     const webcamRef = useRef(null);
@@ -25,9 +17,11 @@ function Home() {
     const [canvasHeight, setCanvasHeight] = useState(0);
     const frameCount = useRef(0);
     const [handMoving, setHandMoving] = useState(false);
-    const landmarksPrev = useRef(null);
-    
-    const handLandmarkIndices = Object.values(handLandmarkEnum);
+    const prevAverageLandmarks = useRef(null);
+    const stillFrameCount = useRef(0);
+    const movingFrameCount = useRef(0);
+    const pastLandmarks = useRef([]);
+    const [distance, setDistance] = useState(null)
     
     const recognizeHands = () => {
         detectedResults.current = null;
@@ -47,33 +41,79 @@ function Home() {
             if (results?.landmarks?.length !== 0 && canvasRef.current) {
               
               const drawingUtils = new DrawingUtils(canvasContext);
+              let resultLandmarks;
               
               for (let i = 0; i < results.landmarks.length; i++) {
-                const resultLandmarks = handLandmarkIndices.map((index) => results.landmarks[i][index])
+                resultLandmarks = HAND_LANDMARKS_LITE.map((index) => results.landmarks[i][index])
                 
-                if (landmarksPrev.current && isMoving3D(landmarksPrev.current, resultLandmarks) && frameCount.current % 3 === 0) {
-                  setHandMoving(true);
-                }
-                else {
-                  setHandMoving(false);
-                }
+                addLandmark(resultLandmarks);
                 
-                landmarksPrev.current = resultLandmarks;
-                
-                drawingUtils.drawLandmarks(resultLandmarks, {
+                drawingUtils.drawLandmarks([results.landmarks[i][THUMB_TIP]], {
                   lineWidth: 3,
                   color: "red",
+                });
+                drawingUtils.drawLandmarks([results.landmarks[i][INDEX_TIP]], {
+                  lineWidth: 3,
+                  color: "green",
+                });
+                drawingUtils.drawLandmarks([results.landmarks[i][MIDDLE_TIP]], {
+                  lineWidth: 3,
+                  color: "blue",
+                });
+                drawingUtils.drawLandmarks([results.landmarks[i][RING_TIP]], {
+                  lineWidth: 3,
+                  color: "pink",
+                });
+                drawingUtils.drawLandmarks([results.landmarks[i][PINKY_TIP]], {
+                  lineWidth: 3,
+                  color: "purple",
+                });
+                drawingUtils.drawLandmarks([results.landmarks[i][WRIST_BASE]], {
+                  lineWidth: 3,
+                  color: "white",
                 });
               }
       
               canvasContext.restore();
+              
+              if (frameCount.current === 0 && resultLandmarks) {
+                const currentAverageLandmakrs = calculateAverageLandmark();
+                if (prevAverageLandmarks.current) {
+                  const [isMoving, euclDistance] = isMoving3D(prevAverageLandmarks.current, currentAverageLandmakrs)
+                  setDistance(euclDistance);
+                  if (isMoving) {
+                    movingFrameCount.current += 1;
+                    if (movingFrameCount.current > 5) {
+                      setHandMoving(true);
+                      stillFrameCount.current = 0;
+                      movingFrameCount.current = 0;
+                    }
+                    console.log('1');
+                    
+                  }
+                  else {
+                    stillFrameCount.current += 1;
+                    if (stillFrameCount.current > 5) {
+                      setHandMoving(false);
+                      stillFrameCount.current = 0;
+                      movingFrameCount.current = 0;
+                    }
+                    console.log('0');
+                  }
+                }
+                
+                
+                prevAverageLandmarks.current = currentAverageLandmakrs;
+                
+              }
+              
             }
           }
           
         window.cancelAnimationFrame(animationFrameId.current);
         animationFrameId.current = window.requestAnimationFrame(recognizeHands);
         
-        frameCount.current = frameCount.current % 3 + 1;
+        frameCount.current = (frameCount.current + 1) % 1;
       };
       
       const createRecognizers = async () => {
@@ -94,6 +134,36 @@ function Home() {
         );
         
         setsHandLandmarker(landmarker);
+    }
+    
+    const addLandmark = (landmark) => {
+      pastLandmarks.current.push(landmark);
+      
+      if (pastLandmarks.current.length > 5) {
+        pastLandmarks.current.shift();
+      }
+    }
+    
+    const calculateAverageLandmark = () => {
+      return pastLandmarks.current.reduce(
+        (acc, curr) => {
+          return acc.map((coords, i) => {
+            
+            return ({
+              x: coords.x + curr[i].x,
+              y: coords.y + curr[i].y,
+              z: coords.z + curr[i].z,
+            })
+          }), pastLandmarks.current[0]
+        }
+      ).map((coords) => {
+        const averageCoords = {
+          x: coords.x / pastLandmarks.current.length,
+          y: coords.y / pastLandmarks.current.length,
+          z: coords.z / pastLandmarks.current.length,
+        };
+        return averageCoords;
+      });
     }
     
     useEffect(() => {

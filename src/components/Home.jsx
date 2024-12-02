@@ -98,7 +98,7 @@ function Home() {
       
               canvasContext.restore();
               
-              if (frameCount.current === 0 && resultLandmarks) {
+              if (resultLandmarks) {
                 const currentAverageLandmakrs = calculateAverageLandmark();
                 if (prevAverageLandmarks.current) {
                   const [isMoving, euclDistance] = isMoving3D(prevAverageLandmarks.current, currentAverageLandmakrs)

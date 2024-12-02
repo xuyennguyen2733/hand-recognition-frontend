@@ -23,7 +23,8 @@ function Home() {
     const animationFrameId = useRef(0);
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
-    const [handState, setHandState] = useState('still');
+    const frameCount = useRef(0);
+    const [handMoving, setHandMoving] = useState(false);
     const landmarksPrev = useRef(null);
     
     const handLandmarkIndices = Object.values(handLandmarkEnum);
@@ -50,11 +51,11 @@ function Home() {
               for (let i = 0; i < results.landmarks.length; i++) {
                 const resultLandmarks = handLandmarkIndices.map((index) => results.landmarks[i][index])
                 
-                if (landmarksPrev.current && isMoving3D(landmarksPrev.current, resultLandmarks)) {
-                  setHandState('moving');
+                if (landmarksPrev.current && isMoving3D(landmarksPrev.current, resultLandmarks) && frameCount.current % 3 === 0) {
+                  setHandMoving(true);
                 }
                 else {
-                  setHandState('still');
+                  setHandMoving(false);
                 }
                 
                 landmarksPrev.current = resultLandmarks;
@@ -67,9 +68,12 @@ function Home() {
       
               canvasContext.restore();
             }
-        }
+          }
+          
         window.cancelAnimationFrame(animationFrameId.current);
         animationFrameId.current = window.requestAnimationFrame(recognizeHands);
+        
+        frameCount.current = frameCount.current % 3 + 1;
       };
       
       const createRecognizers = async () => {
@@ -129,7 +133,7 @@ function Home() {
               height={(window.innerWidth * 0.8) / 16 * 9}
               style={{}}
           ></canvas>
-          <Typography>{handState}</Typography>
+          <Typography>{handMoving ? 'moving' : 'still'}</Typography>
         </Box>
     );
 }

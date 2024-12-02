@@ -5,6 +5,7 @@ import Webcam from "react-webcam";
 import { Box, Typography } from "@mui/material";
 import { isMoving3D } from "../utils/IsMoving";
 import { HAND_LANDMARKS_LITE, INDEX_TIP, MIDDLE_TIP, PINKY_TIP, RING_TIP, THUMB_TIP, WRIST_BASE } from "../utils/Landmarks";
+import DistanceChart from "./DistanceChart";
 
 /**
  * Integrates with the React Webcam, canvas, and MediaPipe functions to detect hand movements and draw the landmarks on to the screen.
@@ -110,7 +111,6 @@ function Home() {
                       stillFrameCount.current = 0;
                       movingFrameCount.current = 0;
                     }
-                    console.log('1');
                     
                   }
                   else {
@@ -120,15 +120,19 @@ function Home() {
                       stillFrameCount.current = 0;
                       movingFrameCount.current = 0;
                     }
-                    console.log('0');
                   }
                 }
-                
-                
                 prevAverageLandmarks.current = currentAverageLandmakrs;
-                
               }
-              
+            }
+            else {
+                
+              stillFrameCount.current +=1;
+              if (stillFrameCount.current > 5) {
+                setHandMoving(false);
+                stillFrameCount.current = 0;
+                movingFrameCount.current = 0;
+              }
             }
           }
           
@@ -224,6 +228,7 @@ function Home() {
               style={{}}
           ></canvas>
           <Typography>{handMoving ? 'moving' : 'still'}</Typography>
+          <DistanceChart distance={distance} />
         </Box>
     );
 }

@@ -1,16 +1,18 @@
-const LOWER_THRESHOLD = 0.001;
+const LOWER_THRESHOLD = 0.002;
 const UPPER_THRESHOLD = 0.1;
 export function isMoving3D(pointsPrev, points ) {
-    let distance = 0
+    const distances = new Array(points.length).fill(0);
+    let isMoving = false;
     for (let i = 0; i < points.length; i++) {
-        distance = euclideanDistance(pointsPrev[i], points[i]);
-        if (i==2) console.log(i, ':', distance)
+        const distance = euclideanDistance(pointsPrev[i], points[i]);
+        // if (i==2) console.log(i, ':', distance)
+        distances[i] = distance;
         if (distance >= LOWER_THRESHOLD && distance <= UPPER_THRESHOLD) {
-            return [true, distance];
+            isMoving = true;
         }
     }
     
-    return [false, distance];
+    return [isMoving, distances];
 }
 
 function euclideanDistance(point1, point2) {

@@ -6,6 +6,29 @@ import { Box, Typography } from "@mui/material";
 import { isMoving3D } from "../utils/IsMoving";
 import { HAND_LANDMARKS_LITE, INDEX_TIP, MIDDLE_TIP, PINKY_TIP, RING_TIP, THUMB_TIP, WRIST_BASE } from "../utils/Landmarks";
 
+/**
+ * Integrates with the React Webcam, canvas, and MediaPipe functions to detect hand movements and draw the landmarks on to the screen.
+ * 
+ * This component:
+ * 1. Captures a video stream from the user's webcam using the `react-webcam` library.
+ * 2. Uses a hand-landmarking model to detect hand landmarks in each frame.
+ * 3. Applies movement detection logic to determine if the hand is moving or still.
+ * 
+ * Movement Detection Logic:
+ * 1. **Average Coordinates**:
+ *    - **Reason**: Certain hand positions yield lower accuracy, causing landmarks to jitter around specific points.
+ *    - **Solution**: The component calculates the average position from the past N (5) landmarks to reduce noise.
+ * 
+ * 2. **Continuous States**:
+ *    - The state (moving/still) is only updated when it remains consistent for N (5) consecutive frames, reducing false positives.
+ * 
+ * 3. **Threshold**:
+ *    - A Euclidean distance threshold is used to filter out minor or excessive movements.
+ *    - The distance is calculated within a defined range (`LOWER_THRESHOLD` and `UPPER_THRESHOLD`) to ignore small jitters or outlier movements.
+ * 
+ * @returns {JSX.Element} A React component that renders the webcam and canvas, and displays the current movement status.
+ */
+
 function Home() {
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
@@ -15,13 +38,12 @@ function Home() {
     const animationFrameId = useRef(0);
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
-    const frameCount = useRef(0);
     const [handMoving, setHandMoving] = useState(false);
     const prevAverageLandmarks = useRef(null);
     const stillFrameCount = useRef(0);
     const movingFrameCount = useRef(0);
     const pastLandmarks = useRef([]);
-    const [distance, setDistance] = useState(null)
+    const [distance, setDistance] = useState(0)
     
     const recognizeHands = () => {
         detectedResults.current = null;
@@ -112,8 +134,6 @@ function Home() {
           
         window.cancelAnimationFrame(animationFrameId.current);
         animationFrameId.current = window.requestAnimationFrame(recognizeHands);
-        
-        frameCount.current = (frameCount.current + 1) % 1;
       };
       
       const createRecognizers = async () => {

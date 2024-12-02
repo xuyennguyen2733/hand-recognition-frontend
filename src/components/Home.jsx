@@ -2,7 +2,8 @@ import { DrawingUtils, HandLandmarker } from "@mediapipe/tasks-vision";
 import { FilesetResolver } from "@mediapipe/tasks-text";
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { isMoving3D } from "../utils/IsMoving";
 
 const handLandmarkEnum = {
   THUMB_TIP: 4,
@@ -22,6 +23,8 @@ function Home() {
     const animationFrameId = useRef(0);
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
+    const [handState, setHandState] = useState('still');
+    const landmarksPrev = useRef(null);
     
     const handLandmarkIndices = Object.values(handLandmarkEnum);
     
@@ -46,6 +49,16 @@ function Home() {
               
               for (let i = 0; i < results.landmarks.length; i++) {
                 const resultLandmarks = handLandmarkIndices.map((index) => results.landmarks[i][index])
+                
+                if (landmarksPrev.current && isMoving3D(landmarksPrev.current, resultLandmarks)) {
+                  setHandState('moving');
+                }
+                else {
+                  setHandState('still');
+                }
+                
+                landmarksPrev.current = resultLandmarks;
+                
                 drawingUtils.drawLandmarks(resultLandmarks, {
                   lineWidth: 3,
                   color: "red",
@@ -72,7 +85,7 @@ function Home() {
                 delegate: "GPU",
                 },
                 runningMode: "VIDEO",
-                numHands: 2,
+                numHands: 1,
             }
         );
         
@@ -95,7 +108,6 @@ function Home() {
     useEffect(() => {
       setCanvasWidth(window.innerWidth * 0.8);
       setCanvasHeight((window.innerWidth * 0.8) / 16 * 9);
-      console.log('window change', canvasWidth, canvasHeight)
     }, [window])
     
     return (
@@ -103,20 +115,21 @@ function Home() {
           width: '80vw',
           aspectRatio: 16/9
         }}>
-            <Webcam
-                muted={false}
-                ref={webcamRef}
-                width={canvasWidth}
-                videoConstraints={{ aspectRatio: 16 / 9 }}
-                style={{width: '80vw', position: 'absolute', zIndex: -1}}
-                />
-            <canvas
-                className="canvas"
-                ref={canvasRef}
-                width={window.innerWidth * 0.8}
-                height={(window.innerWidth * 0.8) / 16 * 9}
-                style={{ aspectRatio: 16 / 9}}
-            ></canvas>
+          <Webcam
+              muted={false}
+              ref={webcamRef}
+              width={canvasWidth}
+              videoConstraints={{ aspectRatio: 16 / 9 }}
+              style={{position: 'absolute', zIndex: -1}}
+              />
+          <canvas
+              className="canvas"
+              ref={canvasRef}
+              width={window.innerWidth * 0.8}
+              height={(window.innerWidth * 0.8) / 16 * 9}
+              style={{}}
+          ></canvas>
+          <Typography>{handState}</Typography>
         </Box>
     );
 }

@@ -4,16 +4,19 @@ import VideoHandDetection from "./VideoHandDetection";
 import MovementDetection from "./MovementDetection";
 
 function Home() {
-    const [distances, setDistances] = useState([]);
-    const [resultLandmarks, setResultLandmarks] = useState([]);
-    
-    return (
-        <>
-            <VideoHandDetection setResultLandmarks={setResultLandmarks} />
-            <MovementDetection resultLandmarks={resultLandmarks} setDistances={setDistances} />
-            <DistanceChart distances={distances} />
-        </>
-    )
+  const [distances, setDistances] = useState([]);
+  const [resultLandmarks, setResultLandmarks] = useState([]);
+
+  return (
+    <>
+      <VideoHandDetection setResultLandmarks={setResultLandmarks} />
+      <MovementDetection
+        resultLandmarks={resultLandmarks}
+        setDistances={setDistances}
+      />
+      <DistanceChart distances={distances} />
+    </>
+  );
 }
 
 export default Home;

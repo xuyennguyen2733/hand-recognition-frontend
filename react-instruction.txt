@@ -28,3 +28,17 @@ function MyFunc() {
         </div>
     )
 }
+
+# Format your code
+
+In the terminal:
+
+RUN npm install -D prettier
+
+In package.json where the attribute "scripts" is, add
+
+"format": "prettier --write \"src/**/*.{js,jsx}\""
+
+From now on, to format your code, in the terminal
+
+RUN npm run format

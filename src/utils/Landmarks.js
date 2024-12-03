@@ -5,4 +5,11 @@ export const RING_TIP = 16;
 export const PINKY_TIP = 20;
 export const WRIST_BASE = 0;
 
-export const HAND_LANDMARKS_LITE = [THUMB_TIP, INDEX_TIP, MIDDLE_TIP, RING_TIP, PINKY_TIP, WRIST_BASE]
+export const HAND_LANDMARKS_LITE = [
+  THUMB_TIP,
+  INDEX_TIP,
+  MIDDLE_TIP,
+  RING_TIP,
+  PINKY_TIP,
+  WRIST_BASE,
+];

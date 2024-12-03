@@ -7,26 +7,32 @@ import { useState } from "react";
 import VideoHandDetection from "./components/VideoHandDetection";
 import HandDataCollection from "./components/HandDataCollection";
 import HandShapeRecognition from "./components/HandShapeRecognition";
+import HandProvider from "./contexts/HandContext";
+import MovementDetection from "./components/MovementDetection";
 
 function App() {
   const queryClient = new QueryClient();
   const [resultLandmarks, setResultLandmarks] = useState([]);
+  const [distances, setDistances] = useState([]);
 
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+        <HandProvider>
         <BrowserRouter>
           <TopNav />
           <VideoHandDetection setResultLandmarks={setResultLandmarks} />
-
+          <MovementDetection
+        resultLandmarks={resultLandmarks}
+        setDistances={setDistances}
+      />
           <Routes>
-            <Route path="/" element={<Home resultLandmarks={resultLandmarks} />} />
-            <Route path="/collect-hand" element={<HandDataCollection />} />
+            <Route path="/" element={<Home resultLandmarks={resultLandmarks} distances={distances} />} />
+            <Route path="/collect-hand" element={<HandDataCollection resultLandmarks={resultLandmarks} />} />
             <Route path="/test" element={<HandShapeRecognition />} />
           </Routes>
         </BrowserRouter>
+    </HandProvider>
       </QueryClientProvider>
-    </>
   );
 }
 

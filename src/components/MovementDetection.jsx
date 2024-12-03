@@ -1,9 +1,10 @@
 import { Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { isMoving3D } from "../utils/IsMoving";
+import useHand from "../hooks/useHand";
 
 function MovementDetection({ resultLandmarks, setDistances }) {
-  const [handMoving, setHandMoving] = useState(false);
+  const {handMoving, setHandMoving} = useHand();
   const prevAverageLandmarks = useRef(null);
   const stillFrameCount = useRef(0);
   const movingFrameCount = useRef(0);

@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const DistanceChart = ({ distance: landmarkDistances }) => {
+const DistanceChart = ({ distances: landmarkDistances }) => {
   const colors = ["red", "green", "blue", "pink", "purple", "white"]
   const labels = ["THUMB_TIP", "INDEX_TIP", "MIDDLE_TIP", "RING_TIP", "PINKY_TIP", "WRIST_BAS"] 
   const [thumbDistance, setThumbDistance] = useState([0]);

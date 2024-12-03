@@ -5,7 +5,6 @@ export function isMoving3D(pointsPrev, points ) {
     let isMoving = false;
     for (let i = 0; i < points.length; i++) {
         const distance = euclideanDistance(pointsPrev[i], points[i]);
-        // if (i==2) console.log(i, ':', distance)
         distances[i] = distance;
         if (distance >= LOWER_THRESHOLD && distance <= UPPER_THRESHOLD) {
             isMoving = true;

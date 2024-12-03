@@ -2,7 +2,7 @@ import { DrawingUtils, HandLandmarker } from "@mediapipe/tasks-vision";
 import { FilesetResolver } from "@mediapipe/tasks-text";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { Box, CircularProgress, Grid2, Modal, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid2 as Grid, Modal, Typography } from "@mui/material";
 
 import {
   HAND_LANDMARKS_LITE,
@@ -97,6 +97,9 @@ function VideoHandDetection({ setResultLandmarks }) {
 
         canvasContext.restore();
       }
+      else {
+        setResultLandmarks([]);
+      }
     }
 
     window.cancelAnimationFrame(animationFrameId.current);
@@ -147,7 +150,7 @@ function VideoHandDetection({ setResultLandmarks }) {
           alignItems: "center",
         }}
       >
-        <Grid2
+        <Grid
           container
           flexDirection="column"
           alignItems="center"
@@ -156,13 +159,13 @@ function VideoHandDetection({ setResultLandmarks }) {
             outline: "none",
           }}
         >
-          <Grid2 item xs={12}>
+          <Grid xs={12}>
             <CircularProgress />
-          </Grid2>
-          <Grid2 item xs={12}>
+          </Grid>
+          <Grid xs={12}>
             <Typography>Loading Hand Landmarker</Typography>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Modal>
       <Box
         sx={{

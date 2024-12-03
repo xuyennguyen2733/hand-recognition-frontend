@@ -2,7 +2,13 @@ import { DrawingUtils, HandLandmarker } from "@mediapipe/tasks-vision";
 import { FilesetResolver } from "@mediapipe/tasks-text";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { Box, CircularProgress, Grid2 as Grid, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Grid2 as Grid,
+  Modal,
+  Typography,
+} from "@mui/material";
 
 import {
   HAND_LANDMARKS_LITE,
@@ -96,8 +102,7 @@ function VideoHandDetection({ setResultLandmarks }) {
         }
 
         canvasContext.restore();
-      }
-      else {
+      } else {
         setResultLandmarks([]);
       }
     }

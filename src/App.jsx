@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import "./App.css";
+import TopNav from "./components/navigation/TopNav";
 
 function App() {
   const queryClient = new QueryClient();
@@ -10,9 +11,7 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <nav className="nav">
-            <Link to="/">home</Link>
-          </nav>
+          <TopNav />
 
           <Routes>
             <Route path="/" element={<Home />} />

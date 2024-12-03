@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import useHand from "../hooks/useHand";
 import { Box, Button } from "@mui/material";
+import AnimatedGraph from "./AnimatedGraph";
 
 function HandDataCollection({resultLandmarks}) {
-    const {handMoving} = useHand();
+    const {handMoving } = useHand();
     const sequence = useRef([]);
     const sequences = useRef([]);
     const [collecting, setCollecting] = useState(false);
@@ -13,8 +14,8 @@ function HandDataCollection({resultLandmarks}) {
     const stopCollecting = () => {
         const timeoutId = setTimeout(() => {
             setCollecting(false);
-            console.log('stop collecting');
-            console.log(sequences.current);
+            // console.log('stop collecting');
+            // console.log(sequences.current);
             sequence.current = [];
         }, 2000)
         
@@ -23,8 +24,8 @@ function HandDataCollection({resultLandmarks}) {
     
     const endSequence = () => {
         const timeoutId = setTimeout(() => {
-            console.log('switching sequence');
-            console.log(sequence.current);
+            // console.log('switching sequence');
+            // console.log(sequence.current);
             sequences.current.push(sequence.current);
             sequence.current = [];
         }, 100)
@@ -34,7 +35,7 @@ function HandDataCollection({resultLandmarks}) {
     
     const keepCollecting = (timeoutId) => {
         clearTimeout(timeoutId);
-        console.log("keep collecting", timeoutId);
+        // console.log("keep collecting", timeoutId);
     }
     
     const clearSequences = () => {
@@ -43,7 +44,7 @@ function HandDataCollection({resultLandmarks}) {
     
     useEffect(() => {
         if (resultLandmarks.length > 0 && sequence.current.length < 300 && collecting) {
-            console.log('collecting')
+            // console.log('collecting')
             sequence.current.push(resultLandmarks);
         }
     }, [resultLandmarks])
@@ -53,7 +54,7 @@ function HandDataCollection({resultLandmarks}) {
             if (resultLandmarks.length > 0) {
                 if (!collecting) {
                     setCollecting(true);
-                    console.log('start collecting')
+                    // console.log('start collecting')
                 }
             }
             
@@ -78,6 +79,7 @@ function HandDataCollection({resultLandmarks}) {
             outline: 'none'
         }
     }} onClick={clearSequences}>Clear sequences: {sequences.current.length}</Button>
+    <AnimatedGraph frameSets={sequences.current} />
   </Box>;
 }
 

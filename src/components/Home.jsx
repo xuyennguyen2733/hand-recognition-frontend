@@ -3,13 +3,13 @@ import DistanceChart from "./DistanceChart";
 import VideoHandDetection from "./VideoHandDetection";
 import MovementDetection from "./MovementDetection";
 
-function Home() {
+function Home({ resultLandmarks}) {
   const [distances, setDistances] = useState([]);
-  const [resultLandmarks, setResultLandmarks] = useState([]);
+  
 
   return (
     <>
-      <VideoHandDetection setResultLandmarks={setResultLandmarks} />
+      
       <MovementDetection
         resultLandmarks={resultLandmarks}
         setDistances={setDistances}

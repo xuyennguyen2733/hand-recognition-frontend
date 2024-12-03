@@ -38,7 +38,6 @@ const NavButton = styled(Button)({
 
 function TopNav() {
   const location = useLocation();
-  console.log("loation", location);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "black", height: "4rem" }}>

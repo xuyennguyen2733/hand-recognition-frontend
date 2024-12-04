@@ -1,5 +1,5 @@
 const LOWER_THRESHOLD = 0.002;
-const UPPER_THRESHOLD = 0.1;
+const UPPER_THRESHOLD = 0.2;
 export function isMoving3D(pointsPrev, points) {
   const distances = new Array(points.length).fill(0);
   let isMoving = false;

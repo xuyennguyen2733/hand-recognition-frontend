@@ -54,14 +54,14 @@ function MovementDetection({ resultLandmarks, setDistances }) {
         setDistances(euclDistance);
         if (isMoving) {
           movingFrameCount.current += 1;
-          if (movingFrameCount.current > 5) {
+          if (movingFrameCount.current > 3) {
             setHandMoving(true);
             stillFrameCount.current = 0;
             movingFrameCount.current = 0;
           }
         } else {
           stillFrameCount.current += 1;
-          if (stillFrameCount.current > 5) {
+          if (stillFrameCount.current > 3) {
             setHandMoving(false);
             stillFrameCount.current = 0;
             movingFrameCount.current = 0;

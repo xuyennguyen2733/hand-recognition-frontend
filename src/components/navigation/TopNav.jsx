@@ -14,18 +14,18 @@ import MainFullIcon from "../../shared/CustomSvgIcon";
 import styled from "@emotion/styled";
 
 const pages = [
-  {
-    link: "/test",
-    label: "Test a model",
-  },
+  // {
+  //   link: "/test",
+  //   label: "Test a model",
+  // },
   {
     link: "/collect-hand",
     label: "Collect hand data",
   },
-  {
-    link: "/collect-hand-lite",
-    label: "Collect hand data (Lite)",
-  },
+  // {
+  //   link: "/collect-hand-lite",
+  //   label: "Collect hand data (Lite)",
+  // },
   {
     link: "/collect-hand-controlled",
     label: "Collect hand data (Controlled)",

@@ -44,11 +44,11 @@ import {
  * @returns {JSX.Element} A React component that renders the webcam and canvas, and displays the current movement status.
  */
 
-function VideoHandDetection({ setResultLandmarks }) {
+function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [handLandmarker, setHandLandmarker] = useState(null);
-  const [poseLandmarker, setPoseLandmarker] = useState(null);
+  // const [poseLandmarker, setPoseLandmarker] = useState(null);
   const detectedResults = useRef(null);
   const [canvasContext, setCanvasContext] = useState(null);
   const animationFrameId = useRef(0);
@@ -64,22 +64,24 @@ function VideoHandDetection({ setResultLandmarks }) {
       const timeStamp = performance.now();
       if (video && video.currentTime !== timeStamp) {
         handResults = handLandmarker.detectForVideo(video, timeStamp);
-        poseResults = poseLandmarker.detectForVideo(video, timeStamp);
+        // poseResults = poseLandmarker.detectForVideo(video, timeStamp);
       }
       else return;
 
       canvasContext.save();
       canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
       const drawingUtils = new DrawingUtils(canvasContext);
-      if ((handResults?.landmarks?.length !== 0 || poseResults?.landmarks?.length !== 0) && canvasRef.current) {
+      if (handResults.landmarks?.length !== 0 && canvasRef.current) {
         let resultLandmarks;
+        // const noseTipLandmarks = poseResults.landmarks[0][NOSE_TIP]
         
-        for (let i = 0; i < handResults.landmarks.length; i++) {
+        for (let i = 0; i < (handResults?.landmarks?.length || 0); i++) {
           resultLandmarks = HAND_LANDMARKS_LITE.map(
             (index) => handResults.landmarks[i][index],
           );
 
           setResultLandmarks(handResults.landmarks[i]);
+          setResultLandmarksLite(resultLandmarks);
 
           drawingUtils.drawLandmarks([handResults.landmarks[i][THUMB_TIP]], {
             lineWidth: 3,
@@ -108,12 +110,12 @@ function VideoHandDetection({ setResultLandmarks }) {
           
           
         }
-          for (let i = 0; i < poseResults.landmarks.length; i++) {
-            drawingUtils.drawLandmarks([poseResults.landmarks[i][NOSE_TIP]], {
-              lineWidth: 3,
-              color: "turquoise",
-            })  
-          }
+          // for (let i = 0; i < (poseResults?.landmarks?.length || 0); i++) {
+          //   drawingUtils.drawLandmarks([noseTipLandmarks], {
+          //     lineWidth: 3,
+          //     color: "turquoise",
+          //   })  
+          // }
 
         canvasContext.restore();
       } else {
@@ -138,16 +140,16 @@ function VideoHandDetection({ setResultLandmarks }) {
       runningMode: "VIDEO",
       numHands: 1,
     });
-    const pose = await PoseLandmarker.createFromOptions(vision, {
-      baseOptions: {
-        modelAssetPath: "/assets/pose_landmarker_lite.task",
-        delegate: "GPU",
-      },
-      runningMode: "VIDEO",
-    });
+    // const pose = await PoseLandmarker.createFromOptions(vision, {
+    //   baseOptions: {
+    //     modelAssetPath: "/assets/pose_landmarker_lite.task",
+    //     delegate: "GPU",
+    //   },
+    //   runningMode: "VIDEO",
+    // });
 
     setHandLandmarker(hand);
-    setPoseLandmarker(pose);
+    // setPoseLandmarker(pose);
   };
 
   useEffect(() => {

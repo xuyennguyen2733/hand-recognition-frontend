@@ -1,7 +1,6 @@
 import { Box, Button } from "@mui/material";
 import { useEffect, useRef, useState } from "react"
 import { Scatter } from "react-chartjs-2";
-import useHand from "../hooks/useHand";
 import { normalize, WRIST_BASE } from "../utils/Landmarks";
 
 function AnimatedGraph({frameSets}) {
@@ -21,16 +20,12 @@ function AnimatedGraph({frameSets}) {
         setAnimate(!animate)
     }
     
-    
-    
     const runAnimation = (dataSet, frameId, sequenceId, length) => {
             setData({
               datasets: [{
-                  data: [ ...normalize(dataSet), {x: NaN, y: NaN}, {x: -0.6, y: -0.6}, {x: NaN, y: NaN}, {x: 0.6, y: 0.6}],
+                  data: [ ...normalize(dataSet, dataSets.current[0][0][WRIST_BASE]), {x: NaN, y: NaN}, {x: -1, y: -1}, {x: NaN, y: NaN}, {x: 1, y: 1}],
                   pointBackgroundColor: colors,
-                  showLine: true, // Connect the dots
             borderWidth: 10,
-            tension: 0.05
                 }],
               })
               

@@ -13,6 +13,7 @@ import MovementDetection from "./components/MovementDetection";
 function App() {
   const queryClient = new QueryClient();
   const [resultLandmarks, setResultLandmarks] = useState([]);
+  const [resultLandmarksLite, setResultLandmarksLite] = useState([]);
   const [distances, setDistances] = useState([]);
 
   return (
@@ -20,9 +21,9 @@ function App() {
         <HandProvider>
         <BrowserRouter>
           <TopNav />
-          <VideoHandDetection setResultLandmarks={setResultLandmarks} />
+          <VideoHandDetection setResultLandmarks={setResultLandmarks} setResultLandmarksLite={setResultLandmarksLite} />
           <MovementDetection
-        resultLandmarks={resultLandmarks}
+        resultLandmarks={resultLandmarksLite}
         setDistances={setDistances}
       />
           <Routes>

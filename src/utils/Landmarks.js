@@ -15,7 +15,6 @@ export const HAND_LANDMARKS_LITE = [
   WRIST_BASE,
 ];
 
-export const normalize = (landmarks) => {
-  const origin = landmarks[WRIST_BASE]
+export const normalize = (landmarks, origin) => {
   return landmarks.map(({x, y}) => ({x: x-origin.x, y: y-origin.y}))
 }

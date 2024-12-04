@@ -4,6 +4,7 @@ export const MIDDLE_TIP = 12;
 export const RING_TIP = 16;
 export const PINKY_TIP = 20;
 export const WRIST_BASE = 0;
+export const NOSE_TIP = 0;
 
 export const HAND_LANDMARKS_LITE = [
   THUMB_TIP,

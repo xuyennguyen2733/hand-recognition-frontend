@@ -1,4 +1,4 @@
-import { DrawingUtils, HandLandmarker } from "@mediapipe/tasks-vision";
+import { DrawingUtils, HandLandmarker, PoseLandmarker } from "@mediapipe/tasks-vision";
 import { FilesetResolver } from "@mediapipe/tasks-text";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
@@ -14,6 +14,7 @@ import {
   HAND_LANDMARKS_LITE,
   INDEX_TIP,
   MIDDLE_TIP,
+  NOSE_TIP,
   PINKY_TIP,
   RING_TIP,
   THUMB_TIP,
@@ -46,7 +47,8 @@ import {
 function VideoHandDetection({ setResultLandmarks }) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const [handLandmarker, setsHandLandmarker] = useState(null);
+  const [handLandmarker, setHandLandmarker] = useState(null);
+  const [poseLandmarker, setPoseLandmarker] = useState(null);
   const detectedResults = useRef(null);
   const [canvasContext, setCanvasContext] = useState(null);
   const animationFrameId = useRef(0);
@@ -57,49 +59,61 @@ function VideoHandDetection({ setResultLandmarks }) {
     detectedResults.current = null;
     if (handLandmarker) {
       const video = webcamRef.current.video;
-      let results;
-      if (video) {
-        results = handLandmarker.detectForVideo(video, performance.now());
+      let handResults;
+      let poseResults;
+      const timeStamp = performance.now();
+      if (video && video.currentTime !== timeStamp) {
+        handResults = handLandmarker.detectForVideo(video, timeStamp);
+        poseResults = poseLandmarker.detectForVideo(video, timeStamp);
       }
+      else return;
 
       canvasContext.save();
       canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
-      if (results?.landmarks?.length !== 0 && canvasRef.current) {
-        const drawingUtils = new DrawingUtils(canvasContext);
+      const drawingUtils = new DrawingUtils(canvasContext);
+      if ((handResults?.landmarks?.length !== 0 || poseResults?.landmarks?.length !== 0) && canvasRef.current) {
         let resultLandmarks;
-
-        for (let i = 0; i < results.landmarks.length; i++) {
+        
+        for (let i = 0; i < handResults.landmarks.length; i++) {
           resultLandmarks = HAND_LANDMARKS_LITE.map(
-            (index) => results.landmarks[i][index],
+            (index) => handResults.landmarks[i][index],
           );
 
-          setResultLandmarks(results.landmarks[i]);
+          setResultLandmarks(handResults.landmarks[i]);
 
-          drawingUtils.drawLandmarks([results.landmarks[i][THUMB_TIP]], {
+          drawingUtils.drawLandmarks([handResults.landmarks[i][THUMB_TIP]], {
             lineWidth: 3,
             color: "red",
           });
-          drawingUtils.drawLandmarks([results.landmarks[i][INDEX_TIP]], {
+          drawingUtils.drawLandmarks([handResults.landmarks[i][INDEX_TIP]], {
             lineWidth: 3,
             color: "green",
           });
-          drawingUtils.drawLandmarks([results.landmarks[i][MIDDLE_TIP]], {
+          drawingUtils.drawLandmarks([handResults.landmarks[i][MIDDLE_TIP]], {
             lineWidth: 3,
             color: "blue",
           });
-          drawingUtils.drawLandmarks([results.landmarks[i][RING_TIP]], {
+          drawingUtils.drawLandmarks([handResults.landmarks[i][RING_TIP]], {
             lineWidth: 3,
             color: "pink",
           });
-          drawingUtils.drawLandmarks([results.landmarks[i][PINKY_TIP]], {
+          drawingUtils.drawLandmarks([handResults.landmarks[i][PINKY_TIP]], {
             lineWidth: 3,
             color: "purple",
           });
-          drawingUtils.drawLandmarks([results.landmarks[i][WRIST_BASE]], {
+          drawingUtils.drawLandmarks([handResults.landmarks[i][WRIST_BASE]], {
             lineWidth: 3,
             color: "white",
           });
+          
+          
         }
+          for (let i = 0; i < poseResults.landmarks.length; i++) {
+            drawingUtils.drawLandmarks([poseResults.landmarks[i][NOSE_TIP]], {
+              lineWidth: 3,
+              color: "turquoise",
+            })  
+          }
 
         canvasContext.restore();
       } else {
@@ -116,7 +130,7 @@ function VideoHandDetection({ setResultLandmarks }) {
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
     );
 
-    const landmarker = await HandLandmarker.createFromOptions(vision, {
+    const hand = await HandLandmarker.createFromOptions(vision, {
       baseOptions: {
         modelAssetPath: "/assets/hand_landmarker.task",
         delegate: "GPU",
@@ -124,8 +138,16 @@ function VideoHandDetection({ setResultLandmarks }) {
       runningMode: "VIDEO",
       numHands: 1,
     });
+    const pose = await PoseLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: "/assets/pose_landmarker_lite.task",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+    });
 
-    setsHandLandmarker(landmarker);
+    setHandLandmarker(hand);
+    setPoseLandmarker(pose);
   };
 
   useEffect(() => {

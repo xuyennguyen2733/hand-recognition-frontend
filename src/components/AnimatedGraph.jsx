@@ -6,6 +6,7 @@ import { normalize, WRIST_BASE } from "../utils/Landmarks";
 function AnimatedGraph({frameSets}) {
     const dataSets = useRef([])
     const [animate, setAnimate] = useState(false);
+    const animationRunning = useRef(false);
     const [data, setData] = useState({
       datasets: [{
           data: [],
@@ -30,11 +31,14 @@ function AnimatedGraph({frameSets}) {
               })
               
         if (frameId < length - 1) {
-            setTimeout(() => runAnimation(dataSets.current[sequenceId][frameId + 1], frameId + 1, sequenceId, length), 100)
+            setTimeout(() => runAnimation(dataSets.current[sequenceId][frameId + 1], frameId + 1, sequenceId, length), 50)
           }
           else if (sequenceId < dataSets.current.length - 1) {
-          setTimeout(() => runAnimation(dataSets.current[sequenceId+1][0], 0, sequenceId+1, dataSets.current[sequenceId+1].length), 100)
+          setTimeout(() => runAnimation(dataSets.current[sequenceId+1][0], 0, sequenceId+1, dataSets.current[sequenceId+1].length), 50)
           
+        }
+        else {
+          animationRunning.current = false;
         }
         
     }
@@ -79,7 +83,10 @@ function AnimatedGraph({frameSets}) {
             )
             
             let frameNum = 0;
-            runAnimation(dataSets.current[0][frameNum], frameNum, 0, dataSets.current[0].length);
+            if (!animationRunning.current) {
+              animationRunning.current = true;
+              runAnimation(dataSets.current[0][frameNum], frameNum, 0, dataSets.current[0].length);
+            }
         
         }
         
@@ -88,7 +95,7 @@ function AnimatedGraph({frameSets}) {
 
     return (
         <Box>
-          <Button onClick={toggleAnimation}>Run animation</Button>
+          <Button disabled={animationRunning.current} onClick={toggleAnimation}>Run animation</Button>
           <Scatter data={data} options={config.current} ref={chartRef}  />
         </Box>
     );

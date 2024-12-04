@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useEffect, useRef, useState } from "react"
 import { Scatter } from "react-chartjs-2";
 import useHand from "../hooks/useHand";
@@ -7,39 +7,34 @@ function AnimatedGraph({frameSets}) {
     const dataSets = useRef([])
     const [animate, setAnimate] = useState(false);
     const [data, setData] = useState({
-        datasets: [{
+      datasets: [{
           data: [],
-          backgroundColor: 'rgb(255, 99, 132)'
         }],
       });
     
     const chartRef = useRef(null);
     
-    const colors = ["red", "green", "blue", "pink", "purple", "white"];
-    const [thumbPoint, setThumbPoint] = useState([0]);
-  const [indexPoint, setIndexPoint] = useState([0]);
-  const [middlePoint, setMiddlePoint] = useState([0]);
-  const [ringPoint, setRingPoint] = useState([0]);
-  const [pinkyPoint, setPinkyPoint] = useState([0]);
-  const [wristPoint, setWristPoint] = useState([0]);
-  const [showChart, setShowChart] = useState(false);
+    const colors = ["Balck", "red", "green", "blue", "pink", "purple", "white", "Balck"];
     
     const toggleAnimation = () => {
         setAnimate(!animate)
     }
     
-    const runAnimation = (dataSet, frameId, length) => {
+    const runAnimation = (dataSet, frameId, sequenceId, length) => {
             setData({
-                datasets: [{
+              datasets: [{
                   data: [{x: 0, y: -1}, ...dataSet, {x: 1, y:0}],
-                  backgroundColor: 'rgb(255, 99, 132)'
+                  pointBackgroundColor: colors,
                 }],
               })
               
         if (frameId < length - 1) {
-            setTimeout(() => runAnimation(dataSets.current[0][frameId + 1], frameId + 1, length), 100)
+            setTimeout(() => runAnimation(dataSets.current[sequenceId][frameId + 1], frameId + 1, sequenceId, length), 100)
+          }
+          else if (sequenceId < dataSets.current.length - 1) {
+          setTimeout(() => runAnimation(dataSets.current[sequenceId+1][0], 0, sequenceId+1, dataSets.current[sequenceId+1].length), 100)
+          
         }
-        
         
     }
       
@@ -47,22 +42,20 @@ function AnimatedGraph({frameSets}) {
         type: 'scatter',
         data: data,
         options: {
-            maintainAspectRatio: true,
+          animation: {
+            duration: 0
+        },
+          responsive: true,
+          maintainAspectRatio: false,
           scales: {
             x: {
-              min: -1,
-              max: 1,
-              ticks: {
-                stepSize: 0.2
-              }
+              min: 0,
+                max: 1,
+                
             },
             y: {
                 min: -1,
-                max: 1,
-                beginAtZero: false,
-                ticks: {
-                  stepSize: 0.2
-                }
+                max: 0,
             }
             
           }
@@ -80,7 +73,7 @@ function AnimatedGraph({frameSets}) {
             )
             
             let frameNum = 0;
-            runAnimation(dataSets.current[0][frameNum], frameNum, dataSets.current[0].length);
+            runAnimation(dataSets.current[0][frameNum], frameNum, 0, dataSets.current[0].length);
         
         }
         
@@ -88,10 +81,10 @@ function AnimatedGraph({frameSets}) {
     
 
     return (
-        <div style={{ width: '600px', height: '400px' }}>
-            <Button onClick={toggleAnimation}>Run animation</Button>
-            <Scatter data={data} options={config.current} ref={chartRef} />
-        </div>
+        <Box>
+          <Button onClick={toggleAnimation}>Run animation</Button>
+          <Scatter data={data} options={config.current} ref={chartRef}  />
+        </Box>
     );
 }
 

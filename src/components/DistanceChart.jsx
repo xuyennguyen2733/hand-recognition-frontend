@@ -30,7 +30,7 @@ const DistanceChart = ({ distances: landmarkDistances }) => {
     "MIDDLE_TIP",
     "RING_TIP",
     "PINKY_TIP",
-    "WRIST_BAS",
+    "WRIST_BASE",
   ];
   const [thumbDistance, setThumbDistance] = useState([0]);
   const [indexDistance, setIndexDistance] = useState([0]);

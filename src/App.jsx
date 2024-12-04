@@ -9,6 +9,7 @@ import HandDataCollection from "./components/HandDataCollection";
 import HandShapeRecognition from "./components/HandShapeRecognition";
 import HandProvider from "./contexts/HandContext";
 import MovementDetection from "./components/MovementDetection";
+import HandDataCollectionControlled from "./components/HandDataCollectionControlled";
 
 function App() {
   const queryClient = new QueryClient();
@@ -29,6 +30,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home resultLandmarks={resultLandmarks} distances={distances} />} />
             <Route path="/collect-hand" element={<HandDataCollection resultLandmarks={resultLandmarks} />} />
+            <Route path="/collect-hand-lite" element={<HandDataCollection resultLandmarks={resultLandmarksLite} />} />
+            <Route path="/collect-hand-controlled" element={<HandDataCollectionControlled resultLandmarks={resultLandmarksLite} />} />
             <Route path="/test" element={<HandShapeRecognition />} />
           </Routes>
         </BrowserRouter>

@@ -23,6 +23,7 @@ function AnimatedGraph({frameSets}) {
     
     const runAnimation = (dataSet, frameId, sequenceId, length) => {
             setData({
+              labels: ["animation"],
               datasets: [{
                   data: [ ...normalize(dataSet, dataSets.current[0][0][WRIST_BASE]), {x: NaN, y: NaN}, {x: -1, y: -1}, {x: NaN, y: NaN}, {x: 1, y: 1}],
                   pointBackgroundColor: colors,
@@ -43,13 +44,22 @@ function AnimatedGraph({frameSets}) {
         
     }
       
-      const config = useRef({
+      const config = {
         type: 'scatter',
         data: data,
         options: {
-          animation: {
-            duration: 0
-        },
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Custom Chart Title'
+            ,
+            customCanvasBackgroundColor: {
+              color: 'lightGreen',
+            }}
+          },
           responsive: true,
           maintainAspectRatio: false,
           scales: {
@@ -70,7 +80,7 @@ function AnimatedGraph({frameSets}) {
             
           }
         }
-      })
+      }
    
       
     useEffect(() => {
@@ -96,7 +106,7 @@ function AnimatedGraph({frameSets}) {
     return (
         <Box>
           <Button disabled={animationRunning.current} onClick={toggleAnimation}>Run animation</Button>
-          <Scatter data={data} options={config.current} ref={chartRef}  />
+          <Scatter data={data} config={config} ref={chartRef} />
         </Box>
     );
 }

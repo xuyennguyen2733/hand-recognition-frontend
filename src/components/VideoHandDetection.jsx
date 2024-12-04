@@ -58,7 +58,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
   const recognizeHands = () => {
     detectedResults.current = null;
     if (handLandmarker) {
-      const video = webcamRef.current.video;
+      const video = webcamRef?.current?.video;
       let handResults;
       let poseResults;
       const timeStamp = performance.now();
@@ -120,6 +120,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
         canvasContext.restore();
       } else {
         setResultLandmarks([]);
+        setResultLandmarksLite([]);
       }
     }
 

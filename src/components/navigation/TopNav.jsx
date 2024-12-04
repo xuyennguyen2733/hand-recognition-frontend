@@ -22,6 +22,14 @@ const pages = [
     link: "/collect-hand",
     label: "Collect hand data",
   },
+  {
+    link: "/collect-hand-lite",
+    label: "Collect hand data (Lite)",
+  },
+  {
+    link: "/collect-hand-controlled",
+    label: "Collect hand data (Controlled)",
+  },
 ];
 
 const NavButton = styled(Button)({

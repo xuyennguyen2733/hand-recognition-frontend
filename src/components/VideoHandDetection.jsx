@@ -73,7 +73,7 @@ function VideoHandDetection({ setResultLandmarks }) {
             (index) => results.landmarks[i][index],
           );
 
-          setResultLandmarks(resultLandmarks);
+          setResultLandmarks(results.landmarks[i]);
 
           drawingUtils.drawLandmarks([results.landmarks[i][THUMB_TIP]], {
             lineWidth: 3,

@@ -2,6 +2,7 @@ import { Box, Button } from "@mui/material";
 import { useEffect, useRef, useState } from "react"
 import { Scatter } from "react-chartjs-2";
 import useHand from "../hooks/useHand";
+import { normalize, WRIST_BASE } from "../utils/Landmarks";
 
 function AnimatedGraph({frameSets}) {
     const dataSets = useRef([])
@@ -14,17 +15,22 @@ function AnimatedGraph({frameSets}) {
     
     const chartRef = useRef(null);
     
-    const colors = ["Balck", "red", "green", "blue", "pink", "purple", "white", "Balck"];
+    const colors = ["red", "red","red","red","red", "green","green","green","green","blue","blue","blue", "blue", "pink","pink","pink","pink", "purple","purple","purple","purple", "transparent","transparent","transparent","transparent"];
     
     const toggleAnimation = () => {
         setAnimate(!animate)
     }
     
+    
+    
     const runAnimation = (dataSet, frameId, sequenceId, length) => {
             setData({
               datasets: [{
-                  data: [{x: 0, y: -1}, ...dataSet, {x: 1, y:0}],
+                  data: [ ...normalize(dataSet), {x: NaN, y: NaN}, {x: -0.6, y: -0.6}, {x: NaN, y: NaN}, {x: 0.6, y: 0.6}],
                   pointBackgroundColor: colors,
+                  showLine: true, // Connect the dots
+            borderWidth: 10,
+            tension: 0.05
                 }],
               })
               
@@ -48,15 +54,20 @@ function AnimatedGraph({frameSets}) {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: {
-              min: 0,
-                max: 1,
-                
-            },
-            y: {
-                min: -1,
-                max: 0,
-            }
+            xAxes: [{
+              ticks: {
+                  beginAtZero: true,
+                  max: 0,
+                  min: 1
+              }
+          }],
+          yAxes: [{
+              ticks: {
+                  beginAtZero: false,
+                  max: -1,
+                  min: 0
+              }
+          }]
             
           }
         }

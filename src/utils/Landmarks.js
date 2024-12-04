@@ -13,3 +13,8 @@ export const HAND_LANDMARKS_LITE = [
   PINKY_TIP,
   WRIST_BASE,
 ];
+
+export const normalize = (landmarks) => {
+  const origin = landmarks[WRIST_BASE]
+  return landmarks.map(({x, y}) => ({x: x-origin.x, y: y-origin.y}))
+}

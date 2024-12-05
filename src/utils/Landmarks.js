@@ -15,17 +15,21 @@ export const HAND_LANDMARKS_LITE = [
   PINKY_TIP,
 ];
 
-export const normalize = (landmarks, origin = landmarks[0]) => {
-  return landmarks.map(({ x, y }) => ({ x: x - origin.x, y: y - origin.y }));
+export const normalize = (landmarks, [originX, originY]) => {
+  // console.log('origin', originX, originY)
+  return landmarks.map(([x, y]) => {
+    // console.log('x, y', x, y);
+    return ([x - originX, y - originY ])
+  })
 };
 
 export const processForScatterGraph = (landmarks) => {
   const processedLandmarks = landmarks.map((landmark) => {
       // console.log('landmark', landmark)
-        return {
-          x: landmark.x,
-          y: -landmark.y,
-        };
+        return [
+          landmark.x,
+          -landmark.y,
+        ];
     });
     
   return processedLandmarks;

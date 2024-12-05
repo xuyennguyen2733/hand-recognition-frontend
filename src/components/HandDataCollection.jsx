@@ -24,7 +24,11 @@ function HandDataCollection({ resultLandmarks }) {
     return normalizedLandmarks;
   }
 
-  
+  const sendSequences = () => {
+    sequences.current.map((sequence, index) => {
+        console.log(`Example ${index+1}`, sequence);
+    })
+  }
 
   useEffect(() => {
     if (collecting) {
@@ -75,6 +79,17 @@ function HandDataCollection({ resultLandmarks }) {
         onClick={clearSequences}
       >
         Clear sequences: {sequences.current.length}
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          "&:focus": {
+            outline: "none",
+          },
+        }}
+        onClick={sendSequences}
+      >
+        Send
       </Button>
       <AnimatedGraph frameSets={sequences.current} colors={handColorsLite} />
     </Box>

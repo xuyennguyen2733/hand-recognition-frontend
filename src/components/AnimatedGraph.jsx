@@ -28,12 +28,13 @@ function AnimatedGraph({ frameSets, colors }) {
   };
 
   const runAnimation = (dataSet, frameId, sequenceId, length) => {
+    // console.log('set', dataSet)
     setData({
       labels: ["animation"],
       datasets: [
         {
           data: [
-            ...dataSet,
+            ...dataSet.map(point => ({x: point[0], y: point[1]})),
             { x: NaN, y: NaN },
             { x: -1.0, y: -1.5 },
             { x: NaN, y: NaN },

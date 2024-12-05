@@ -19,6 +19,18 @@ export const normalize = (landmarks, origin = landmarks[0]) => {
   return landmarks.map(({ x, y }) => ({ x: x - origin.x, y: y - origin.y }));
 };
 
+export const processForScatterGraph = (landmarks) => {
+  const processedLandmarks = landmarks.map((landmark) => {
+      // console.log('landmark', landmark)
+        return {
+          x: landmark.x,
+          y: -landmark.y,
+        };
+    });
+    
+  return processedLandmarks;
+}
+
 export const handColorsFull = [
   "white",
   "white",

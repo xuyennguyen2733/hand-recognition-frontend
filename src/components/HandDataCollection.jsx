@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useHand from "../hooks/useHand";
 import { Box, Button } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
-import { handColorsLite, normalize } from "../utils/Landmarks";
+import { handColorsLite, normalize, processForScatterGraph } from "../utils/Landmarks";
 
 function HandDataCollection({ resultLandmarks }) {
   const sequence = useRef([]);
@@ -17,18 +17,12 @@ function HandDataCollection({ resultLandmarks }) {
   };
   
   const processData = () => {
-    const processedLandmarks = resultLandmarks.map((landmark) => {
-        // console.log('landmark', landmark)
-          return {
-            x: landmark.x,
-            y: -landmark.y,
-          };
-      });
+    const processedLandmarks = processForScatterGraph(resultLandmarks);
       if (sequence.current.length === 0) {
         origin.current = processedLandmarks[0];
       }
       const normalizedLandmarks = normalize(processedLandmarks, origin.current);
-    return normalizedLandmarks
+    return normalizedLandmarks;
   }
 
   const sampleData = () => {
@@ -44,10 +38,7 @@ function HandDataCollection({ resultLandmarks }) {
     if (collecting) {
       if (resultLandmarks.length > 0) {
         sequence.current.push(processData(resultLandmarks));
-      } else if (sequence.current.length > 0) {
-        sequences.current.push(sequence.current);
-        sequence.current = [];
-    }
+      } 
 } else if (sequence.current.length > 0) {
         sequences.current.push(sequence.current);
       sequence.current = [];

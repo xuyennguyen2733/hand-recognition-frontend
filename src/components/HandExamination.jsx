@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import useHand from "../hooks/useHand";
 import { Box, Button } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
-import { handColorsFull, normalize } from "../utils/Landmarks";
+import { handColorsFull, normalize, processForScatterGraph } from "../utils/Landmarks";
 
 function HandExamination({ resultLandmarks }) {
   const { handMoving } = useHand();
   const sequence = useRef([]);
   const sequences = useRef([]);
+  const origin = useRef(null);
   const [collecting, setCollecting] = useState(false);
   const [collectingTimeoutId, setCollectingTimeoutId] = useState(null);
   const [sequenceTimeoutId, setSequenceTimeoutId] = useState(null);
@@ -42,6 +43,15 @@ function HandExamination({ resultLandmarks }) {
   const clearSequences = () => {
     sequences.current = [];
   };
+  
+  const processData = () => {
+    const processedLandmarks = processForScatterGraph(resultLandmarks);
+      if (sequence.current.length === 0) {
+        origin.current = processedLandmarks[0];
+      }
+      const normalizedLandmarks = normalize(processedLandmarks, origin.current);
+    return normalizedLandmarks;
+  }
 
   useEffect(() => {
     if (
@@ -50,7 +60,7 @@ function HandExamination({ resultLandmarks }) {
       collecting
     ) {
       // console.log('collecting')
-      sequence.current.push(normalize(resultLandmarks));
+      sequence.current.push(processData(resultLandmarks));
     }
   }, [resultLandmarks]);
 

@@ -15,6 +15,10 @@ export const HAND_LANDMARKS_LITE = [
   WRIST_BASE,
 ];
 
-export const normalize = (landmarks, origin) => {
+export const normalize = (landmarks, origin=landmarks[0]) => {
   return landmarks.map(({x, y}) => ({x: x-origin.x, y: y-origin.y}))
 }
+
+export const handColorsFull = ["white", "white","red","red","red", "green","green","green","green","blue","blue","blue", "blue", "pink","pink","pink","pink", "purple","purple","purple","purple", "transparent","transparent","transparent","transparent"];
+
+export const handColorsLite = ["white", "red", "green", "blue", "pink", "purple", "transparent","transparent","transparent","transparent"]

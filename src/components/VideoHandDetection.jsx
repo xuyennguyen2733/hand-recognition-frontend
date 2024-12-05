@@ -62,7 +62,8 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
       let handResults;
       let poseResults;
       const timeStamp = performance.now();
-      if (video && video.currentTime !== timeStamp) {
+      // console.log('video', video);
+      if (!!(video?.width) && !!(video?.height) && video.currentTime !== timeStamp) {
         handResults = handLandmarker.detectForVideo(video, timeStamp);
         // poseResults = poseLandmarker.detectForVideo(video, timeStamp);
       }
@@ -168,7 +169,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
   useEffect(() => {
     setCanvasWidth(window.innerWidth * 0.8);
     setCanvasHeight(((window.innerWidth * 0.8) / 16) * 9);
-  }, [window]);
+  }, [window, canvasWidth, canvasHeight]);
 
   return (
     <Fragment>
@@ -210,14 +211,15 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
           muted={false}
           ref={webcamRef}
           width={canvasWidth}
+          height={canvasHeight}
           videoConstraints={{ aspectRatio: 16 / 9 }}
           style={{ position: "absolute", zIndex: -1 }}
         />
         <canvas
           className="canvas"
           ref={canvasRef}
-          width={window.innerWidth * 0.8}
-          height={((window.innerWidth * 0.8) / 16) * 9}
+          width={canvasWidth}
+          height={canvasHeight}
         ></canvas>
       </Box>
     </Fragment>

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { Scatter } from "react-chartjs-2";
 import { normalize, WRIST_BASE } from "../utils/Landmarks";
 
-function AnimatedGraph({frameSets}) {
+function AnimatedGraph({frameSets, colors}) {
     const dataSets = useRef([])
     const [animate, setAnimate] = useState(false);
     const [selectedFrame, setSelectedFrame] = useState(0);
@@ -18,8 +18,6 @@ function AnimatedGraph({frameSets}) {
     
     const chartRef = useRef(null);
     
-    const colors = ["turquoise", "turquoise","red","red","red", "green","green","green","green","blue","blue","blue", "blue", "pink","pink","pink","pink", "purple","purple","purple","purple", "transparent","transparent","transparent","transparent"];
-    
     const toggleAnimation = (mode) => {
       if (frameSets.length > 0) {
           setAnimate(true);
@@ -33,7 +31,7 @@ function AnimatedGraph({frameSets}) {
             setData({
               labels: ["animation"],
               datasets: [{
-                  data: [ ...normalize(dataSet, dataSets.current[0][0][WRIST_BASE]), {x: NaN, y: NaN}, {x: -1, y: -1}, {x: NaN, y: NaN}, {x: 1, y: 1}],
+                  data: [ ...dataSet, dataSets.current[0][0][WRIST_BASE], {x: NaN, y: NaN}, {x: -1, y: -1}, {x: NaN, y: NaN}, {x: 1, y: 1}],
                   pointBackgroundColor: colors,
             borderWidth: 10,
                 }],
@@ -93,11 +91,17 @@ function AnimatedGraph({frameSets}) {
       
     useEffect(() => {
         if (frameSets.length > 0) {
-            dataSets.current = frameSets.map((frames) => (
-                frames.map((landmark) => (landmark.map((point) => ({
+            dataSets.current = frameSets.map((frames) => {
+              return frames.map((landmark) => {
+                return landmark.map((point) => {
+                  return {
                     x: point.x,
                     y: -point.y
-                })))))
+                }
+                })
+              }
+          )
+            }
             )
             
             if (animate && dataSets.current.length > 0) {

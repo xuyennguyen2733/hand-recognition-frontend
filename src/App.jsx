@@ -5,11 +5,11 @@ import "./App.css";
 import TopNav from "./components/navigation/TopNav";
 import { useState } from "react";
 import VideoHandDetection from "./components/VideoHandDetection";
-import HandDataCollection from "./components/HandDataCollection";
+import HandExamination from "./components/HandExamination";
 import HandShapeRecognition from "./components/HandShapeRecognition";
 import HandProvider from "./contexts/HandContext";
 import MovementDetection from "./components/MovementDetection";
-import HandDataCollectionControlled from "./components/HandDataCollectionControlled";
+import HandDataCollection from "./components/HandDataCollection";
 
 function App() {
   const queryClient = new QueryClient();
@@ -29,9 +29,9 @@ function App() {
       />
           <Routes>
             <Route path="/" element={<Home resultLandmarks={resultLandmarks} distances={distances} />} />
-            <Route path="/collect-hand" element={<HandDataCollection resultLandmarks={resultLandmarks} />} />
-            <Route path="/collect-hand-lite" element={<HandDataCollection resultLandmarks={resultLandmarksLite} />} />
-            <Route path="/collect-hand-controlled" element={<HandDataCollectionControlled resultLandmarks={resultLandmarksLite} />} />
+            <Route path="/examine-hand" element={<HandExamination resultLandmarks={resultLandmarks} />} />
+            <Route path="/collect-hand-lite" element={<HandExamination resultLandmarks={resultLandmarksLite} />} />
+            <Route path="/collect-hand" element={<HandDataCollection resultLandmarks={resultLandmarksLite} />} />
             <Route path="/test" element={<HandShapeRecognition />} />
           </Routes>
         </BrowserRouter>

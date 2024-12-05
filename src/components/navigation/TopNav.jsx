@@ -19,16 +19,16 @@ const pages = [
   //   label: "Test a model",
   // },
   {
-    link: "/collect-hand",
-    label: "Collect hand data",
+    link: "/examine-hand",
+    label: "Examine hand movement",
   },
   // {
   //   link: "/collect-hand-lite",
   //   label: "Collect hand data (Lite)",
   // },
   {
-    link: "/collect-hand-controlled",
-    label: "Collect hand data (Controlled)",
+    link: "/collect-hand",
+    label: "Collect hand data",
   },
 ];
 

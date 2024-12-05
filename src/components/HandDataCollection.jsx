@@ -2,84 +2,73 @@ import { useEffect, useRef, useState } from "react";
 import useHand from "../hooks/useHand";
 import { Box, Button } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
+import { handColorsLite, normalize } from "../utils/Landmarks";
 
 function HandDataCollection({resultLandmarks}) {
-    const {handMoving } = useHand();
     const sequence = useRef([]);
     const sequences = useRef([]);
     const [collecting, setCollecting] = useState(false);
-    const [collectingTimeoutId, setCollectingTimeoutId ]= useState(null);
-    const [sequenceTimeoutId, setSequenceTimeoutId] = useState(null);
-    
-    const stopCollecting = () => {
-        const timeoutId = setTimeout(() => {
-            setCollecting(false);
-            // console.log('stop collecting');
-            // console.log(sequences.current);
-            sequence.current = [];
-        }, 2000)
-        
-        setCollectingTimeoutId(timeoutId);
-    }
-    
-    const endSequence = () => {
-        const timeoutId = setTimeout(() => {
-            // console.log('switching sequence');
-            // console.log(sequence.current);
-            sequences.current.push(sequence.current);
-            sequence.current = [];
-        }, 100)
-        
-        setSequenceTimeoutId(timeoutId);
-    }
-    
-    const keepCollecting = (timeoutId) => {
-        clearTimeout(timeoutId);
-        // console.log("keep collecting", timeoutId);
-    }
+    const targetLength = 15;
+    const collectButtonRef = useRef(null);
     
     const clearSequences = () => {
         sequences.current = [];
     }
     
+    const sampleData = () => {
+        if (sequence.current.length < targetLength) {
+            for (let i = 0; i < targetLength - sequence.length; i++) {
+                sequence.current.push(sequence.current[sequence.current.length-1])
+            }
+        }
+        else if (sequence.current.length > targetLength) {
+            
+        }
+    }
+    
     useEffect(() => {
-        if (resultLandmarks.length > 0 && sequence.current.length < 300 && collecting) {
-            // console.log('collecting')
-            sequence.current.push(resultLandmarks);
+        if (collecting) {
+            if (resultLandmarks.length > 0) {
+                
+                sequence.current.push(normalize(resultLandmarks));
+            }
+            else if (sequence.current.length > 0) {
+                sequences.current.push(sequence.current);
+                sequence.current = []
+            }
+        }
+        else if (sequences.current.length > 0){
+            sequence.current = []
         }
     }, [resultLandmarks])
     
     useEffect(() => {
-        if (handMoving) {
-            if (resultLandmarks.length > 0) {
-                if (!collecting) {
-                    setCollecting(true);
-                    // console.log('start collecting')
+        const handleKeyDown = (event) => {
+            if (event.code === "Space") {
+                event.preventDefault();
+                if (collectButtonRef.current) {
+                    collectButtonRef.current.click();
                 }
             }
-            
-            if (collectingTimeoutId || sequenceTimeoutId) {
-                keepCollecting(sequenceTimeoutId);
-                keepCollecting(collectingTimeoutId);
-                setCollectingTimeoutId(null);
-                setSequenceTimeoutId(null);
-            }
-            
         }
-        else if (collecting) {
-            endSequence();
-            stopCollecting();
-        }
-    }, [handMoving])
-    
+        
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    })
     
   return <Box>
+    <Button ref={collectButtonRef} variant="contained" sx={{
+        '&:focus': {
+            outline: 'none'
+        }
+    }} onClick={() => setCollecting(!collecting)}
+    >{collecting ? 'stop collecting' : 'start collecting'}</Button>
     <Button variant='contained' sx={{
         '&:focus': {
             outline: 'none'
         }
     }} onClick={clearSequences}>Clear sequences: {sequences.current.length}</Button>
-    <AnimatedGraph frameSets={sequences.current} />
+    <AnimatedGraph frameSets={sequences.current} colors={handColorsLite}/>
   </Box>;
 }
 

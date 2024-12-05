@@ -9,7 +9,7 @@ function HandDataCollection({ resultLandmarks }) {
   const origin = useRef(null);
   const sequences = useRef([]);
   const [collecting, setCollecting] = useState(false);
-  const targetLength = 15;
+  const targetLength = 30;
   const collectButtonRef = useRef(null);
 
   const clearSequences = () => {
@@ -26,12 +26,34 @@ function HandDataCollection({ resultLandmarks }) {
   }
 
   const sampleData = () => {
-    if (sequence.current.length < targetLength) {
-      for (let i = 0; i < targetLength - sequence.length; i++) {
-        sequence.current.push(sequence.current[sequence.current.length - 1]);
-      }
-    } else if (sequence.current.length > targetLength) {
+      const sequenceLength = sequence.current.length;
+      console.log('length', sequenceLength);
+      let sampledSequence = [];
+    if (sequenceLength < targetLength) {
+        const lengthDifference = targetLength - sequenceLength;
+        
+        let increment = (sequenceLength - 1) / lengthDifference;
+            let index = increment;
+            let currentIndex = 0;
+            for (let i = 0; i < targetLength; i++) {
+                sampledSequence.push(sequence.current[currentIndex]);
+                if (currentIndex === Math.floor(index)) {
+                    index += increment;
+                }
+                else {
+                    currentIndex++;
+                }
+            }
+        
+    } else if (sequenceLength > targetLength) {
+        let increment = (sequenceLength - 1) / targetLength;
+        let index = increment; 
+        for (let i = 0; i < targetLength; i ++) {
+            sampledSequence.push(sequence.current[Math.floor(index)]);
+            index += increment;
+        }
     }
+    return sampledSequence;
   };
 
   useEffect(() => {
@@ -40,7 +62,7 @@ function HandDataCollection({ resultLandmarks }) {
         sequence.current.push(processData(resultLandmarks));
       } 
 } else if (sequence.current.length > 0) {
-        sequences.current.push(sequence.current);
+        sequences.current.push(sampleData());
       sequence.current = [];
     }
   }, [resultLandmarks]);

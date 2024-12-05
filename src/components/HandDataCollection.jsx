@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
 import { handColorsLite, normalize, processForScatterGraph, sample } from "../utils/Landmarks";
+import { sendHandData } from "../api/HandApi";
 
 function HandDataCollection({ resultLandmarks }) {
   const sequence = useRef([]);
@@ -11,6 +12,7 @@ function HandDataCollection({ resultLandmarks }) {
   const targetLength = 30;
   const collectButtonRef = useRef(null);
   const [label, setLabel] = useState("");
+  const [sending, setSending] = useState(false);
 
   const clearSequences = () => {
     sequences.current = [];
@@ -25,17 +27,28 @@ function HandDataCollection({ resultLandmarks }) {
     return normalizedLandmarks;
   }
 
-  const sendSequences = () => {
-    if (!label) alert("Label cannot be empty!")
+  const sendSequences = async () => {
+    if (!label) alert("Label cannot be empty!");
         else 
-    sequences.current.map((sequence, index) => {
-        const body = {
-            label: label,
-            landmarks: sequence,
-            index: index
+    {
+        setSending(true);
+        for (let i = 0; i < sequences.current.length; i ++) {
+            const body = {
+                label: label,
+                landmarks: sequences.current[i],
+                index: i
+            }
+            console.log(body);
+            try {
+                const result = await sendHandData(body);
+                console.log("send success", result);
+            }
+            catch (err) {
+                console.error("failed to send", err);
+            }
         }
-        console.log(body);
-    })
+        setSending(false);
+    }
   }
   
   const handleChangeLabel = (event) => {

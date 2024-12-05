@@ -21,6 +21,7 @@
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
     "@tensorflow/tfjs": "^4.20.0",
+    "axios": "^1.7.9",
     "chart.js": "^4.4.7",
     "frontend": "file:",
     "hand-recognition-frontend": "file:",

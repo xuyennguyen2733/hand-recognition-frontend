@@ -6,6 +6,7 @@ import { handColorsLite, normalize } from "../utils/Landmarks";
 
 function HandDataCollection({ resultLandmarks }) {
   const sequence = useRef([]);
+  const origin = useRef(null);
   const sequences = useRef([]);
   const [collecting, setCollecting] = useState(false);
   const targetLength = 15;
@@ -14,6 +15,21 @@ function HandDataCollection({ resultLandmarks }) {
   const clearSequences = () => {
     sequences.current = [];
   };
+  
+  const processData = () => {
+    const processedLandmarks = resultLandmarks.map((landmark) => {
+        // console.log('landmark', landmark)
+          return {
+            x: landmark.x,
+            y: -landmark.y,
+          };
+      });
+      if (sequence.current.length === 0) {
+        origin.current = processedLandmarks[0];
+      }
+      const normalizedLandmarks = normalize(processedLandmarks, origin.current);
+    return normalizedLandmarks
+  }
 
   const sampleData = () => {
     if (sequence.current.length < targetLength) {
@@ -27,12 +43,13 @@ function HandDataCollection({ resultLandmarks }) {
   useEffect(() => {
     if (collecting) {
       if (resultLandmarks.length > 0) {
-        sequence.current.push(normalize(resultLandmarks));
+        sequence.current.push(processData(resultLandmarks));
       } else if (sequence.current.length > 0) {
         sequences.current.push(sequence.current);
         sequence.current = [];
-      }
-    } else if (sequences.current.length > 0) {
+    }
+} else if (sequence.current.length > 0) {
+        sequences.current.push(sequence.current);
       sequence.current = [];
     }
   }, [resultLandmarks]);
@@ -49,7 +66,7 @@ function HandDataCollection({ resultLandmarks }) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  });
+  }, []);
 
   return (
     <Box>

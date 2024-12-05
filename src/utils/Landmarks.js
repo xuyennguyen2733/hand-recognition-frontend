@@ -7,12 +7,12 @@ export const WRIST_BASE = 0;
 export const NOSE_TIP = 0;
 
 export const HAND_LANDMARKS_LITE = [
+  WRIST_BASE,
   THUMB_TIP,
   INDEX_TIP,
   MIDDLE_TIP,
   RING_TIP,
   PINKY_TIP,
-  WRIST_BASE,
 ];
 
 export const normalize = (landmarks, origin = landmarks[0]) => {

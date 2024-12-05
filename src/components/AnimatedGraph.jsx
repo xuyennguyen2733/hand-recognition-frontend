@@ -34,11 +34,10 @@ function AnimatedGraph({ frameSets, colors }) {
         {
           data: [
             ...dataSet,
-            dataSets.current[0][0][WRIST_BASE],
             { x: NaN, y: NaN },
-            { x: -1, y: -1 },
+            { x: -1.0, y: -1.5 },
             { x: NaN, y: NaN },
-            { x: 1, y: 1 },
+            { x: 1.0, y: 1.5 },
           ],
           pointBackgroundColor: colors,
           borderWidth: 10,
@@ -50,7 +49,7 @@ function AnimatedGraph({ frameSets, colors }) {
       timeoutId.current = setTimeout(
         () =>
           runAnimation(
-            dataSets.current[sequenceId][frameId + 1],
+            frameSets[sequenceId][frameId + 1],
             frameId + 1,
             sequenceId,
             length,
@@ -59,15 +58,15 @@ function AnimatedGraph({ frameSets, colors }) {
       );
     } else if (
       animationMode.current === "ALL" &&
-      sequenceId < dataSets.current.length - 1
+      sequenceId < frameSets.length - 1
     ) {
       timeoutId.current = setTimeout(
         () =>
           runAnimation(
-            dataSets.current[sequenceId + 1][0],
+            frameSets[sequenceId + 1][0],
             0,
             sequenceId + 1,
-            dataSets.current[sequenceId + 1].length,
+            frameSets[sequenceId + 1].length,
           ),
         50,
       );
@@ -119,35 +118,26 @@ function AnimatedGraph({ frameSets, colors }) {
 
   useEffect(() => {
     if (frameSets.length > 0) {
-      dataSets.current = frameSets.map((frames) => {
-        return frames.map((landmark) => {
-          return landmark.map((point) => {
-            return {
-              x: point.x,
-              y: -point.y,
-            };
-          });
-        });
-      });
+      
 
-      if (animate && dataSets.current.length > 0) {
+      if (animate && frameSets.length > 0) {
         switch (animationMode.current) {
           case "ALL": {
             runAnimation(
-              dataSets.current[0][0],
+              frameSets[0][0],
               0,
               0,
-              dataSets.current[0].length,
+              frameSets[0].length,
             );
             break;
           }
           case "ONE": {
             if (selectedSequence !== "") {
               runAnimation(
-                dataSets.current[selectedSequence][selectedFrame],
+                frameSets[selectedSequence][selectedFrame],
                 selectedFrame,
                 selectedSequence,
-                dataSets.current[selectedSequence].length,
+                frameSets[selectedSequence].length,
               );
             } else {
               setAnimate(false);

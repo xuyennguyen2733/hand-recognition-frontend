@@ -4,7 +4,7 @@ import { isMoving3D } from "../utils/IsMoving";
 import useHand from "../hooks/useHand";
 
 function MovementDetection({ resultLandmarks, setDistances }) {
-  const {handMoving, setHandMoving} = useHand();
+  const { handMoving, setHandMoving } = useHand();
   const prevAverageLandmarks = useRef(null);
   const stillFrameCount = useRef(0);
   const movingFrameCount = useRef(0);

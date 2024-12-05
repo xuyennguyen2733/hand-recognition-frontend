@@ -19,24 +19,45 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-        <HandProvider>
+      <HandProvider>
         <BrowserRouter>
           <TopNav />
-          <VideoHandDetection setResultLandmarks={setResultLandmarks} setResultLandmarksLite={setResultLandmarksLite} />
+          <VideoHandDetection
+            setResultLandmarks={setResultLandmarks}
+            setResultLandmarksLite={setResultLandmarksLite}
+          />
           <MovementDetection
-        resultLandmarks={resultLandmarksLite}
-        setDistances={setDistances}
-      />
+            resultLandmarks={resultLandmarksLite}
+            setDistances={setDistances}
+          />
           <Routes>
-            <Route path="/" element={<Home resultLandmarks={resultLandmarks} distances={distances} />} />
-            <Route path="/examine-hand" element={<HandExamination resultLandmarks={resultLandmarks} />} />
-            <Route path="/collect-hand-lite" element={<HandExamination resultLandmarks={resultLandmarksLite} />} />
-            <Route path="/collect-hand" element={<HandDataCollection resultLandmarks={resultLandmarksLite} />} />
+            <Route
+              path="/"
+              element={
+                <Home resultLandmarks={resultLandmarks} distances={distances} />
+              }
+            />
+            <Route
+              path="/examine-hand"
+              element={<HandExamination resultLandmarks={resultLandmarks} />}
+            />
+            <Route
+              path="/collect-hand-lite"
+              element={
+                <HandExamination resultLandmarks={resultLandmarksLite} />
+              }
+            />
+            <Route
+              path="/collect-hand"
+              element={
+                <HandDataCollection resultLandmarks={resultLandmarksLite} />
+              }
+            />
             <Route path="/test" element={<HandShapeRecognition />} />
           </Routes>
         </BrowserRouter>
-    </HandProvider>
-      </QueryClientProvider>
+      </HandProvider>
+    </QueryClientProvider>
   );
 }
 

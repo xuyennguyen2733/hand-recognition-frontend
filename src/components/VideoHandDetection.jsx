@@ -1,4 +1,8 @@
-import { DrawingUtils, HandLandmarker, PoseLandmarker } from "@mediapipe/tasks-vision";
+import {
+  DrawingUtils,
+  HandLandmarker,
+  PoseLandmarker,
+} from "@mediapipe/tasks-vision";
 import { FilesetResolver } from "@mediapipe/tasks-text";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
@@ -63,11 +67,14 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
       let poseResults;
       const timeStamp = performance.now();
       // console.log('video', video);
-      if (!!(video?.width) && !!(video?.height) && video.currentTime !== timeStamp) {
+      if (
+        !!video?.width &&
+        !!video?.height &&
+        video.currentTime !== timeStamp
+      ) {
         handResults = handLandmarker.detectForVideo(video, timeStamp);
         // poseResults = poseLandmarker.detectForVideo(video, timeStamp);
-      }
-      else return;
+      } else return;
 
       canvasContext.save();
       canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -75,7 +82,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
       if (handResults.landmarks?.length !== 0 && canvasRef.current) {
         let resultLandmarks;
         // const noseTipLandmarks = poseResults.landmarks[0][NOSE_TIP]
-        
+
         for (let i = 0; i < (handResults?.landmarks?.length || 0); i++) {
           resultLandmarks = HAND_LANDMARKS_LITE.map(
             (index) => handResults.landmarks[i][index],
@@ -108,15 +115,13 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
             lineWidth: 3,
             color: "white",
           });
-          
-          
         }
-          // for (let i = 0; i < (poseResults?.landmarks?.length || 0); i++) {
-          //   drawingUtils.drawLandmarks([noseTipLandmarks], {
-          //     lineWidth: 3,
-          //     color: "turquoise",
-          //   })  
-          // }
+        // for (let i = 0; i < (poseResults?.landmarks?.length || 0); i++) {
+        //   drawingUtils.drawLandmarks([noseTipLandmarks], {
+        //     lineWidth: 3,
+        //     color: "turquoise",
+        //   })
+        // }
 
         canvasContext.restore();
       } else {

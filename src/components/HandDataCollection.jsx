@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import useHand from "../hooks/useHand";
 import { Box, Button } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
-import { handColorsLite, normalize, processForScatterGraph } from "../utils/Landmarks";
+import { handColorsLite, normalize, processForScatterGraph, sample } from "../utils/Landmarks";
 
 function HandDataCollection({ resultLandmarks }) {
   const sequence = useRef([]);
@@ -25,36 +24,7 @@ function HandDataCollection({ resultLandmarks }) {
     return normalizedLandmarks;
   }
 
-  const sampleData = () => {
-      const sequenceLength = sequence.current.length;
-      console.log('length', sequenceLength);
-      let sampledSequence = [];
-    if (sequenceLength < targetLength) {
-        const lengthDifference = targetLength - sequenceLength;
-        
-        let increment = (sequenceLength - 1) / lengthDifference;
-            let index = increment;
-            let currentIndex = 0;
-            for (let i = 0; i < targetLength; i++) {
-                sampledSequence.push(sequence.current[currentIndex]);
-                if (currentIndex === Math.floor(index)) {
-                    index += increment;
-                }
-                else {
-                    currentIndex++;
-                }
-            }
-        
-    } else if (sequenceLength > targetLength) {
-        let increment = (sequenceLength - 1) / targetLength;
-        let index = increment; 
-        for (let i = 0; i < targetLength; i ++) {
-            sampledSequence.push(sequence.current[Math.floor(index)]);
-            index += increment;
-        }
-    }
-    return sampledSequence;
-  };
+  
 
   useEffect(() => {
     if (collecting) {
@@ -62,7 +32,7 @@ function HandDataCollection({ resultLandmarks }) {
         sequence.current.push(processData(resultLandmarks));
       } 
 } else if (sequence.current.length > 0) {
-        sequences.current.push(sampleData());
+        sequences.current.push(sample(sequence.current, targetLength));
       sequence.current = [];
     }
   }, [resultLandmarks]);

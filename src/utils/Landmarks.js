@@ -31,6 +31,36 @@ export const processForScatterGraph = (landmarks) => {
   return processedLandmarks;
 }
 
+export const sample = (sequence, targetLength) => {
+  const sequenceLength = sequence.length;
+  let sampledSequence = [];
+if (sequenceLength < targetLength) {
+    const lengthDifference = targetLength - sequenceLength;
+    
+    let increment = (sequenceLength - 1) / lengthDifference;
+        let index = increment;
+        let currentIndex = 0;
+        for (let i = 0; i < targetLength; i++) {
+            sampledSequence.push(sequence[currentIndex]);
+            if (currentIndex === Math.floor(index)) {
+                index += increment;
+            }
+            else {
+                currentIndex++;
+            }
+        }
+    
+} else if (sequenceLength > targetLength) {
+    let increment = (sequenceLength - 1) / targetLength;
+    let index = increment; 
+    for (let i = 0; i < targetLength; i ++) {
+        sampledSequence.push(sequence[Math.floor(index)]);
+        index += increment;
+    }
+}
+return sampledSequence;
+};
+
 export const handColorsFull = [
   "white",
   "white",

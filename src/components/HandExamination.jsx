@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useHand from "../hooks/useHand";
 import { Box, Button } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
-import { handColorsFull, normalize, processForScatterGraph } from "../utils/Landmarks";
+import { handColorsFull, normalize, processForScatterGraph, sample } from "../utils/Landmarks";
 
 function HandExamination({ resultLandmarks }) {
   const { handMoving } = useHand();
@@ -12,6 +12,7 @@ function HandExamination({ resultLandmarks }) {
   const [collecting, setCollecting] = useState(false);
   const [collectingTimeoutId, setCollectingTimeoutId] = useState(null);
   const [sequenceTimeoutId, setSequenceTimeoutId] = useState(null);
+  const targetLength = 30;
 
   const stopCollecting = () => {
     const timeoutId = setTimeout(() => {
@@ -28,7 +29,7 @@ function HandExamination({ resultLandmarks }) {
     const timeoutId = setTimeout(() => {
       // console.log('switching sequence');
       // console.log(sequence.current);
-      sequences.current.push(sequence.current);
+      sequences.current.push(sample(sequence.current, targetLength));
       sequence.current = [];
     }, 100);
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
 import { handColorsLite, normalize, processForScatterGraph, sample } from "../utils/Landmarks";
 
@@ -10,6 +10,7 @@ function HandDataCollection({ resultLandmarks }) {
   const [collecting, setCollecting] = useState(false);
   const targetLength = 30;
   const collectButtonRef = useRef(null);
+  const [label, setLabel] = useState("");
 
   const clearSequences = () => {
     sequences.current = [];
@@ -25,9 +26,20 @@ function HandDataCollection({ resultLandmarks }) {
   }
 
   const sendSequences = () => {
+    if (!label) alert("Label cannot be empty!")
+        else 
     sequences.current.map((sequence, index) => {
-        console.log(`Example ${index+1}`, sequence);
+        const body = {
+            label: label,
+            landmarks: sequence,
+            index: index
+        }
+        console.log(body);
     })
+  }
+  
+  const handleChangeLabel = (event) => {
+    setLabel(event.target.value)
   }
 
   useEffect(() => {
@@ -91,6 +103,7 @@ function HandDataCollection({ resultLandmarks }) {
       >
         Send
       </Button>
+      <TextField label="Label" value={label} onChange={handleChangeLabel} />
       <AnimatedGraph frameSets={sequences.current} colors={handColorsLite} />
     </Box>
   );

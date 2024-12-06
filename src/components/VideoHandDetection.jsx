@@ -68,10 +68,12 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
       const timeStamp = performance.now();
       // console.log('video', video);
       if (
-        !!video?.width &&
-        !!video?.height &&
+        (video?.width || 0) > 0 &&
+        (video?.height || 0) > 0 &&
         video.currentTime !== timeStamp
       ) {
+        // console.log('vid width and height', video.width, video.height)
+        // console.log('handLandmarker', handLandmarker)
         handResults = handLandmarker.detectForVideo(video, timeStamp);
         // poseResults = poseLandmarker.detectForVideo(video, timeStamp);
       } else return;
@@ -212,6 +214,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          margin: "5rem"
         }}
       >
         <Webcam

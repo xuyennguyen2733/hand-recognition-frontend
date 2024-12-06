@@ -48,7 +48,7 @@ function TopNav() {
   const location = useLocation();
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "black", height: "4rem" }}>
+    <AppBar position="fixed" sx={{ backgroundColor: "black", height: "4rem" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/">

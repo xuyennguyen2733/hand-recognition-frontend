@@ -1,7 +1,8 @@
-import { Box, Button, MenuItem, Select } from "@mui/material";
+import { Box, Button, IconButton, MenuItem, Select } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { Scatter } from "react-chartjs-2";
 import { normalize, WRIST_BASE } from "../utils/Landmarks";
+import { Close } from "@mui/icons-material";
 
 function AnimatedGraph({ frameSets, colors }) {
   const dataSets = useRef([]);
@@ -75,6 +76,10 @@ function AnimatedGraph({ frameSets, colors }) {
       setAnimate(false);
     }
   };
+  
+  const handleRemoveFrameSet = (index) => {
+    frameSets.splice(index, 1);
+  }
 
   const config = {
     type: "scatter",
@@ -147,6 +152,7 @@ function AnimatedGraph({ frameSets, colors }) {
         }
       }
     } else {
+      console.log('set clared')
       setSelectedSequence("");
     }
   }, [frameSets, animate]);
@@ -169,7 +175,8 @@ function AnimatedGraph({ frameSets, colors }) {
         </MenuItem>
         {frameSets.map((_, index) => (
           <MenuItem key={index} value={index}>
-            {index + 1}
+            <span style={{flexGrow: 1}}>{index + 1}</span>
+            <IconButton edge="end" size="small" onClick={() => handleRemoveFrameSet(index)}><Close /></IconButton>
           </MenuItem>
         ))}
       </Select>

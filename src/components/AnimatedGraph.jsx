@@ -29,7 +29,7 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
   };
 
   const runAnimation = (dataSet, frameId, sequenceId, length) => {
-    console.log('set', dataSet)
+    // console.log('set', dataSet)
     setData({
       labels: ["animation"],
       datasets: [
@@ -155,7 +155,7 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
       }
     } else {
       setSelectedSequence("");
-      console.log('set changes', sequences)
+      // console.log('set changes', sequences)
     }
   }, [sequences, animate]);
 

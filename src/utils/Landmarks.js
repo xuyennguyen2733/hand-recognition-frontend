@@ -62,6 +62,8 @@ if (sequenceLength < targetLength) {
         index += increment;
     }
 }
+// sampledSequence[0] = sequence[0];
+// sampledSequence[targetLength - 1] = sequence[sequenceLength-1];
 return sampledSequence;
 };
 

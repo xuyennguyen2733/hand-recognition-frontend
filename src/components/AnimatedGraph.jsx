@@ -28,7 +28,7 @@ function AnimatedGraph({ frameSets, colors }) {
   };
 
   const runAnimation = (dataSet, frameId, sequenceId, length) => {
-    // console.log('set', dataSet)
+    console.log('set', dataSet)
     setData({
       labels: ["animation"],
       datasets: [

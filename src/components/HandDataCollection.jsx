@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import AnimatedGraph from "./AnimatedGraph";
 import { handColorsLite, normalize, processForScatterGraph, sample } from "../utils/Landmarks";
-import { sendHandData } from "../api/HandApi";
+import { predictHand, sendHandData } from "../api/HandApi";
 
 function HandDataCollection({ resultLandmarks }) {
   const sequence = useRef([]);
@@ -34,11 +34,10 @@ function HandDataCollection({ resultLandmarks }) {
         setSending(true);
         for (let i = 0; i < sequences.current.length; i ++) {
             const body = {
-                label: label,
+                label: label.toLowerCase(),
                 landmarks: sequences.current[i],
                 index: i
             }
-            console.log(body);
             try {
                 const result = await sendHandData(body);
                 console.log("send success", result);
@@ -49,6 +48,24 @@ function HandDataCollection({ resultLandmarks }) {
         }
         setSending(false);
     }
+  }
+  const predictSequences = async () => {
+    setSending(true);
+        for (let i = 0; i < sequences.current.length; i ++) {
+            const body = {
+                label: label.toLowerCase(),
+                landmarks: sequences.current[i],
+                index: i
+            }
+            try {
+                const result = await predictHand(body);
+                console.log("send success", result);
+            }
+            catch (err) {
+                console.error("failed to send", err);
+            }
+        }
+        setSending(false);
   }
   
   const handleChangeLabel = (event) => {
@@ -64,6 +81,7 @@ function HandDataCollection({ resultLandmarks }) {
         sequences.current.push(sample(sequence.current, targetLength));
       sequence.current = [];
     }
+    // console.log(resultLandmarks)
   }, [resultLandmarks]);
 
   useEffect(() => {
@@ -115,6 +133,17 @@ function HandDataCollection({ resultLandmarks }) {
         onClick={sendSequences}
       >
         Send
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          "&:focus": {
+            outline: "none",
+          },
+        }}
+        onClick={predictSequences}
+      >
+        Predict
       </Button>
       <TextField label="Label" value={label} onChange={handleChangeLabel} />
       <AnimatedGraph frameSets={sequences.current} colors={handColorsLite} />

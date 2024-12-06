@@ -4,7 +4,7 @@ import { Scatter } from "react-chartjs-2";
 import { normalize, WRIST_BASE } from "../utils/Landmarks";
 import { Close } from "@mui/icons-material";
 
-function AnimatedGraph({ frameSets, colors }) {
+function AnimatedGraph({ sequences, colors, setSequences }) {
   const dataSets = useRef([]);
   const [animate, setAnimate] = useState(false);
   const [selectedFrame, setSelectedFrame] = useState(0);
@@ -22,7 +22,7 @@ function AnimatedGraph({ frameSets, colors }) {
   const chartRef = useRef(null);
 
   const toggleAnimation = (mode) => {
-    if (frameSets.length > 0) {
+    if (sequences.length > 0) {
       setAnimate(true);
       animationMode.current = mode;
     }
@@ -51,7 +51,7 @@ function AnimatedGraph({ frameSets, colors }) {
       timeoutId.current = setTimeout(
         () =>
           runAnimation(
-            frameSets[sequenceId][frameId + 1],
+            sequences[sequenceId][frameId + 1],
             frameId + 1,
             sequenceId,
             length,
@@ -60,15 +60,15 @@ function AnimatedGraph({ frameSets, colors }) {
       );
     } else if (
       animationMode.current === "ALL" &&
-      sequenceId < frameSets.length - 1
+      sequenceId < sequences.length - 1
     ) {
       timeoutId.current = setTimeout(
         () =>
           runAnimation(
-            frameSets[sequenceId + 1][0],
+            sequences[sequenceId + 1][0],
             0,
             sequenceId + 1,
-            frameSets[sequenceId + 1].length,
+            sequences[sequenceId + 1].length,
           ),
         50,
       );
@@ -77,8 +77,11 @@ function AnimatedGraph({ frameSets, colors }) {
     }
   };
   
-  const handleRemoveFrameSet = (index) => {
-    frameSets.splice(index, 1);
+  const handleRemoveSequence = (e, index) => {
+    e.stopPropagation();
+    setSelectedSequence(sequences.length - 2 < 0 ? "" : sequences.length - 2);
+    setSequences(prev => prev.filter((_, idx) => idx !== index));
+    
   }
 
   const config = {
@@ -123,27 +126,26 @@ function AnimatedGraph({ frameSets, colors }) {
   };
 
   useEffect(() => {
-    if (frameSets.length > 0) {
-      
+    if (sequences.length > 0) {
 
-      if (animate && frameSets.length > 0) {
+      if (animate) {
         switch (animationMode.current) {
           case "ALL": {
             runAnimation(
-              frameSets[0][0],
+              sequences[0][0],
               0,
               0,
-              frameSets[0].length,
+              sequences[0].length,
             );
             break;
           }
           case "ONE": {
             if (selectedSequence !== "") {
               runAnimation(
-                frameSets[selectedSequence][selectedFrame],
+                sequences[selectedSequence][selectedFrame],
                 selectedFrame,
                 selectedSequence,
-                frameSets[selectedSequence].length,
+                sequences[selectedSequence].length,
               );
             } else {
               setAnimate(false);
@@ -152,10 +154,10 @@ function AnimatedGraph({ frameSets, colors }) {
         }
       }
     } else {
-      console.log('set clared')
       setSelectedSequence("");
+      console.log('set changes', sequences)
     }
-  }, [frameSets, animate]);
+  }, [sequences, animate]);
 
   return (
     <Box>
@@ -173,10 +175,10 @@ function AnimatedGraph({ frameSets, colors }) {
         <MenuItem value="">
           <em>Select a frame</em>
         </MenuItem>
-        {frameSets.map((_, index) => (
+        {sequences.map((_, index) => (
           <MenuItem key={index} value={index}>
             <span style={{flexGrow: 1}}>{index + 1}</span>
-            <IconButton edge="end" size="small" onClick={() => handleRemoveFrameSet(index)}><Close /></IconButton>
+            <IconButton edge="end" size="small" onClick={(e) => handleRemoveSequence(e, index)}><Close /></IconButton>
           </MenuItem>
         ))}
       </Select>

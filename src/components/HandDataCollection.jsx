@@ -7,7 +7,7 @@ import { predictHand, sendHandData } from "../api/HandApi";
 function HandDataCollection({ resultLandmarks }) {
   const sequence = useRef([]);
   const origin = useRef(null);
-  const sequences = useRef([]);
+  const [sequences, setSequences] = useState([])
   const [collecting, setCollecting] = useState(false);
   const targetLength = 30;
   const collectButtonRef = useRef(null);
@@ -15,7 +15,7 @@ function HandDataCollection({ resultLandmarks }) {
   const [sending, setSending] = useState(false);
 
   const clearSequences = () => {
-    sequences.current = [];
+    setSequences([]);
   };
   
   const processData = () => {
@@ -32,10 +32,10 @@ function HandDataCollection({ resultLandmarks }) {
         else 
     {
         setSending(true);
-        for (let i = 0; i < sequences.current.length; i ++) {
+        for (let i = 0; i < sequences.length; i ++) {
             const body = {
                 label: label.toLowerCase(),
-                landmarks: sequences.current[i],
+                landmarks: sequences[i],
                 index: i
             }
             try {
@@ -51,10 +51,10 @@ function HandDataCollection({ resultLandmarks }) {
   }
   const predictSequences = async () => {
     setSending(true);
-        for (let i = 0; i < sequences.current.length; i ++) {
+        for (let i = 0; i < sequences.length; i ++) {
             const body = {
                 label: label.toLowerCase(),
-                landmarks: sequences.current[i],
+                landmarks: sequences[i],
                 index: i
             }
             try {
@@ -78,7 +78,7 @@ function HandDataCollection({ resultLandmarks }) {
         sequence.current.push(processData(resultLandmarks));
       } 
 } else if (sequence.current.length > 0) {
-        sequences.current.push(sample(sequence.current, targetLength));
+        setSequences(current => [...current, sample(sequence.current, targetLength)]);
       sequence.current = [];
     }
     // console.log(resultLandmarks)
@@ -121,7 +121,7 @@ function HandDataCollection({ resultLandmarks }) {
         }}
         onClick={clearSequences}
       >
-        Clear sequences: {sequences.current.length}
+        Clear sequences: {sequences.length}
       </Button>
       <Button
         variant="contained"
@@ -146,7 +146,7 @@ function HandDataCollection({ resultLandmarks }) {
         Predict
       </Button>
       <TextField label="Label" value={label} onChange={handleChangeLabel} />
-      <AnimatedGraph frameSets={sequences.current} colors={handColorsLite} />
+      <AnimatedGraph sequences={sequences} setSequences={setSequences} colors={handColorsLite} />
     </Box>
   );
 }

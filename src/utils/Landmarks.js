@@ -19,52 +19,47 @@ export const normalize = (landmarks, [originX, originY]) => {
   // console.log('origin', originX, originY)
   return landmarks.map(([x, y]) => {
     // console.log('x, y', x, y);
-    return ([x - originX, y - originY ])
-  })
+    return [x - originX, y - originY];
+  });
 };
 
 export const processForScatterGraph = (landmarks) => {
   const processedLandmarks = landmarks.map((landmark) => {
-      // console.log('landmark', landmark)
-        return [
-          landmark.x,
-          -landmark.y,
-        ];
-    });
-    
+    // console.log('landmark', landmark)
+    return [landmark.x, -landmark.y];
+  });
+
   return processedLandmarks;
-}
+};
 
 export const sample = (sequence, targetLength) => {
   const sequenceLength = sequence.length;
   let sampledSequence = [];
-if (sequenceLength < targetLength) {
+  if (sequenceLength < targetLength) {
     const lengthDifference = targetLength - sequenceLength;
-    
+
     let increment = (sequenceLength - 1) / lengthDifference;
-        let index = increment;
-        let currentIndex = 0;
-        for (let i = 0; i < targetLength; i++) {
-            sampledSequence.push(sequence[currentIndex]);
-            if (currentIndex === Math.floor(index)) {
-                index += increment;
-            }
-            else {
-                currentIndex++;
-            }
-        }
-    
-} else if (sequenceLength > targetLength) {
-    let increment = (sequenceLength - 1) / targetLength;
-    let index = increment; 
-    for (let i = 0; i < targetLength; i ++) {
-        sampledSequence.push(sequence[Math.floor(index)]);
+    let index = increment;
+    let currentIndex = 0;
+    for (let i = 0; i < targetLength; i++) {
+      sampledSequence.push(sequence[currentIndex]);
+      if (currentIndex === Math.floor(index)) {
         index += increment;
+      } else {
+        currentIndex++;
+      }
     }
-}
-// sampledSequence[0] = sequence[0];
-// sampledSequence[targetLength - 1] = sequence[sequenceLength-1];
-return sampledSequence;
+  } else if (sequenceLength > targetLength) {
+    let increment = (sequenceLength - 1) / targetLength;
+    let index = increment;
+    for (let i = 0; i < targetLength; i++) {
+      sampledSequence.push(sequence[Math.floor(index)]);
+      index += increment;
+    }
+  }
+  // sampledSequence[0] = sequence[0];
+  // sampledSequence[targetLength - 1] = sequence[sequenceLength-1];
+  return sampledSequence;
 };
 
 export const handColorsFull = [

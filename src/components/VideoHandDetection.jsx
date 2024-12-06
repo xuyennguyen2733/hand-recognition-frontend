@@ -92,7 +92,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
 
           setResultLandmarks(handResults.landmarks[i]);
           setResultLandmarksLite(resultLandmarks);
-          
+
           drawingUtils.drawLandmarks([handResults.landmarks[i][WRIST_BASE]], {
             lineWidth: 3,
             color: "white",
@@ -118,7 +118,6 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
             lineWidth: 3,
             color: "purple",
           });
-         
         }
         // for (let i = 0; i < (poseResults?.landmarks?.length || 0); i++) {
         //   drawingUtils.drawLandmarks([noseTipLandmarks], {
@@ -214,7 +213,7 @@ function VideoHandDetection({ setResultLandmarks, setResultLandmarksLite }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          margin: "5rem"
+          margin: "5rem",
         }}
       >
         <Webcam

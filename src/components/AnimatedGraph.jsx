@@ -35,7 +35,7 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
       datasets: [
         {
           data: [
-            ...dataSet.map(point => ({x: point[0], y: point[1]})),
+            ...dataSet.map((point) => ({ x: point[0], y: point[1] })),
             { x: NaN, y: NaN },
             { x: -1.0, y: -1.5 },
             { x: NaN, y: NaN },
@@ -76,13 +76,12 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
       setAnimate(false);
     }
   };
-  
+
   const handleRemoveSequence = (e, index) => {
     e.stopPropagation();
     setSelectedSequence(sequences.length - 2 < 0 ? "" : sequences.length - 2);
-    setSequences(prev => prev.filter((_, idx) => idx !== index));
-    
-  }
+    setSequences((prev) => prev.filter((_, idx) => idx !== index));
+  };
 
   const config = {
     type: "scatter",
@@ -127,16 +126,10 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
 
   useEffect(() => {
     if (sequences.length > 0) {
-
       if (animate) {
         switch (animationMode.current) {
           case "ALL": {
-            runAnimation(
-              sequences[0][0],
-              0,
-              0,
-              sequences[0].length,
-            );
+            runAnimation(sequences[0][0], 0, 0, sequences[0].length);
             break;
           }
           case "ONE": {
@@ -177,8 +170,14 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
         </MenuItem>
         {sequences.map((_, index) => (
           <MenuItem key={index} value={index}>
-            <span style={{flexGrow: 1}}>{index + 1}</span>
-            <IconButton edge="end" size="small" onClick={(e) => handleRemoveSequence(e, index)}><Close /></IconButton>
+            <span style={{ flexGrow: 1 }}>{index + 1}</span>
+            <IconButton
+              edge="end"
+              size="small"
+              onClick={(e) => handleRemoveSequence(e, index)}
+            >
+              <Close />
+            </IconButton>
           </MenuItem>
         ))}
       </Select>

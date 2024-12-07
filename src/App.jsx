@@ -10,6 +10,7 @@ import HandShapeRecognition from "./components/HandShapeRecognition";
 import HandProvider from "./contexts/HandContext";
 import MovementDetection from "./components/MovementDetection";
 import HandDataCollection from "./components/HandDataCollection";
+import { handColorsFull, handColorsLite } from "./utils/Landmarks";
 
 function App() {
   const queryClient = new QueryClient();
@@ -39,12 +40,12 @@ function App() {
             />
             <Route
               path="/examine-hand"
-              element={<HandExamination resultLandmarks={resultLandmarks} />}
+              element={<HandExamination resultLandmarks={resultLandmarks} colors={handColorsFull} />}
             />
             <Route
-              path="/collect-hand-lite"
+              path="/examine-hand-lite"
               element={
-                <HandExamination resultLandmarks={resultLandmarksLite} />
+                <HandExamination resultLandmarks={resultLandmarksLite} colors={handColorsLite} />
               }
             />
             <Route

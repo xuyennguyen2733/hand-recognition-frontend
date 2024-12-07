@@ -56,6 +56,7 @@ function HandDataCollection({ resultLandmarks }) {
       }
     }
   };
+  
   const predictSequences = async () => {
     setSending(true);
     try {

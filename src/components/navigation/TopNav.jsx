@@ -22,10 +22,10 @@ const pages = [
     link: "/examine-hand",
     label: "Examine hand movement",
   },
-  // {
-  //   link: "/collect-hand-lite",
-  //   label: "Collect hand data (Lite)",
-  // },
+  {
+    link: "/examine-hand-lite",
+    label: "Examine hand movement (Lite)",
+  },
   {
     link: "/collect-hand",
     label: "Collect hand data",

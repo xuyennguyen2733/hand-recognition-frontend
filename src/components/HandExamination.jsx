@@ -8,8 +8,9 @@ import {
   processForScatterGraph,
   sample,
 } from "../utils/Landmarks";
+import { predictHand } from "../api/HandApi";
 
-function HandExamination({ resultLandmarks }) {
+function HandExamination({ resultLandmarks, colors }) {
   const { handMoving } = useHand();
   const sequence = useRef([]);
   const [sequences, setSequences] = useState([]);
@@ -18,6 +19,8 @@ function HandExamination({ resultLandmarks }) {
   const [collectingTimeoutId, setCollectingTimeoutId] = useState(null);
   const [sequenceTimeoutId, setSequenceTimeoutId] = useState(null);
   const targetLength = 30;
+  const [sending, setSending] = useState(false);
+  const [label, setLabel] = useState("");
 
   const stopCollecting = () => {
     const timeoutId = setTimeout(() => {
@@ -58,6 +61,26 @@ function HandExamination({ resultLandmarks }) {
     }
     const normalizedLandmarks = normalize(processedLandmarks, origin.current);
     return normalizedLandmarks;
+  };
+  
+  const predictSequences = async () => {
+    setSending(true);
+    try {
+    for (let i = 0; i < sequences.length; i++) {
+      const body = {
+        label: label.toLowerCase(),
+        landmarks: sequences[i],
+        index: i,
+      };
+        const result = await predictHand(body);
+        console.log("send success", result);
+      }
+      } catch (err) {
+        console.error("failed to send", err);
+    } finally {
+      setSending(false);
+      
+    }
   };
 
   useEffect(() => {
@@ -105,7 +128,18 @@ function HandExamination({ resultLandmarks }) {
       >
         Clear sequences: {sequences.length}
       </Button>
-      <AnimatedGraph sequences={sequences} setSequences={setSequences} colors={handColorsFull} />
+      <Button disabled={sending}
+        variant="contained"
+        sx={{
+          "&:focus": {
+            outline: "none",
+          },
+        }}
+        onClick={predictSequences}
+      >
+        Predict
+      </Button>
+      <AnimatedGraph sequences={sequences} setSequences={setSequences} colors={colors} />
     </Box>
   );
 }

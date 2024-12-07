@@ -12,7 +12,7 @@ import {
 function HandExamination({ resultLandmarks }) {
   const { handMoving } = useHand();
   const sequence = useRef([]);
-  const sequences = useRef([]);
+  const [sequences, setSequences] = useState([]);
   const origin = useRef(null);
   const [collecting, setCollecting] = useState(false);
   const [collectingTimeoutId, setCollectingTimeoutId] = useState(null);
@@ -23,7 +23,7 @@ function HandExamination({ resultLandmarks }) {
     const timeoutId = setTimeout(() => {
       setCollecting(false);
       // console.log('stop collecting');
-      // console.log(sequences.current);
+      // console.log(sequences);
       sequence.current = [];
     }, 2000);
 
@@ -34,7 +34,8 @@ function HandExamination({ resultLandmarks }) {
     const timeoutId = setTimeout(() => {
       // console.log('switching sequence');
       // console.log(sequence.current);
-      sequences.current.push(sample(sequence.current, targetLength));
+      const sampledSequence = sample(sequence.current, targetLength);
+      setSequences(current => [...current, sampledSequence])
       sequence.current = [];
     }, 100);
 
@@ -47,7 +48,7 @@ function HandExamination({ resultLandmarks }) {
   };
 
   const clearSequences = () => {
-    sequences.current = [];
+    setSequences([]);
   };
 
   const processData = () => {
@@ -102,9 +103,9 @@ function HandExamination({ resultLandmarks }) {
         }}
         onClick={clearSequences}
       >
-        Clear sequences: {sequences.current.length}
+        Clear sequences: {sequences.length}
       </Button>
-      <AnimatedGraph frameSets={sequences.current} colors={handColorsFull} />
+      <AnimatedGraph sequences={sequences} setSequences={setSequences} colors={handColorsFull} />
     </Box>
   );
 }

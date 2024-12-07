@@ -36,38 +36,44 @@ function HandDataCollection({ resultLandmarks }) {
     if (!label) alert("Label cannot be empty!");
     else {
       setSending(true);
+      try {
       for (let i = 0; i < sequences.length; i++) {
         const body = {
           label: label.toLowerCase(),
           landmarks: sequences[i],
           index: i,
         };
-        try {
           const result = await sendHandData(body);
           console.log("send success", result);
+        }
         } catch (err) {
           console.error("failed to send", err);
-        }
       }
-      setSending(false);
+      finally {
+        setSending(false);
+        setLabel("")
+        
+      }
     }
   };
   const predictSequences = async () => {
     setSending(true);
+    try {
     for (let i = 0; i < sequences.length; i++) {
       const body = {
         label: label.toLowerCase(),
         landmarks: sequences[i],
         index: i,
       };
-      try {
         const result = await predictHand(body);
         console.log("send success", result);
+      }
       } catch (err) {
         console.error("failed to send", err);
-      }
+    } finally {
+      setSending(false);
+      
     }
-    setSending(false);
   };
 
   const handleChangeLabel = (event) => {
@@ -80,9 +86,10 @@ function HandDataCollection({ resultLandmarks }) {
         sequence.current.push(processData(resultLandmarks));
       }
     } else if (sequence.current.length > 0) {
+      const sampledSequence = sample(sequence.current, targetLength);
       setSequences((current) => [
         ...current,
-        sample(sequence.current, targetLength),
+        sampledSequence,
       ]);
       sequence.current = [];
     }
@@ -128,7 +135,7 @@ function HandDataCollection({ resultLandmarks }) {
       >
         Clear sequences: {sequences.length}
       </Button>
-      <Button
+      <Button disabled={sending}
         variant="contained"
         sx={{
           "&:focus": {
@@ -139,7 +146,7 @@ function HandDataCollection({ resultLandmarks }) {
       >
         Send
       </Button>
-      <Button
+      <Button disabled={sending}
         variant="contained"
         sx={{
           "&:focus": {
@@ -150,7 +157,7 @@ function HandDataCollection({ resultLandmarks }) {
       >
         Predict
       </Button>
-      <TextField label="Label" value={label} onChange={handleChangeLabel} />
+      <TextField disabled={sending} label="Label" value={label} onChange={handleChangeLabel} />
       <AnimatedGraph
         sequences={sequences}
         setSequences={setSequences}

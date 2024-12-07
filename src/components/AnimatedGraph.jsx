@@ -29,7 +29,11 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
   };
 
   const runAnimation = (dataSet, frameId, sequenceId, length) => {
-    // console.log('set', dataSet)
+    if (!dataSet) {
+      console.log('set', dataSet, 'frameId', frameId, 'sequenceId', sequenceId, 'length', length);
+      alert("dataSet is empty!");
+      return;
+    }
     setData({
       labels: ["animation"],
       datasets: [
@@ -47,7 +51,7 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
       ],
     });
 
-    if (frameId < length - 1) {
+    if (frameId < length - 2) {
       timeoutId.current = setTimeout(
         () =>
           runAnimation(
@@ -60,7 +64,7 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
       );
     } else if (
       animationMode.current === "ALL" &&
-      sequenceId < sequences.length - 1
+      sequenceId < sequences.length - 2
     ) {
       timeoutId.current = setTimeout(
         () =>
@@ -154,6 +158,9 @@ function AnimatedGraph({ sequences, colors, setSequences }) {
 
   return (
     <Box>
+      <Button onClick={() => setAnimate(false)}>
+        Reset animation
+      </Button>
       <Button disabled={animate} onClick={() => toggleAnimation("ALL")}>
         Run all animation
       </Button>
